@@ -43,7 +43,7 @@ src/generator/generator
 /build/vs20*
 /build/gmake
 /build/headers
-/build/config.props
+# /build/config.props
 /build/premake/premake5*
 /build/gen
 /artifacts
