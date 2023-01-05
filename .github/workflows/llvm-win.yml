@@ -28,7 +28,7 @@ jobs:
       - name: Check out
         shell: cmd
         run: |
-          git clone -b ${{ env.GITHUB_REF_SLUG }} https://github.com/mono/CppSharp.git C:\CppSharp
+          git clone -b ${{ env.GITHUB_REF_SLUG }} https://github.com/hxbb00/CppSharp.git C:\CppSharp
         
       - uses: lukka/get-cmake@latest
 

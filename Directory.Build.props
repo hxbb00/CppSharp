@@ -7,7 +7,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>    
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/mono/CppSharp</RepositoryUrl>
+    <RepositoryUrl>https://github.com/hxbb00/CppSharp</RepositoryUrl>
     <RepositoryCommit>$(GITHUB_SHA)</RepositoryCommit>
     <Authors>João Matos, Dimitar Dobrev, Jose Torres</Authors>
     <Copyright>João Matos, Dimitar Dobrev</Copyright>
