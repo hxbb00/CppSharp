@@ -1,0 +1,69 @@
+name: LLVM-arm
+
+on:
+    workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - arch: aarch64
+            distro: ubuntu20.04
+
+    runs-on: ubuntu-20.04
+
+    name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: uraimo/run-on-arch-action@v2
+        name: Build artifact
+        id: build
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ matrix.distro }}
+
+          # Not required, but speeds up builds
+          githubToken: ${{ github.token }}
+
+          # Create an artifacts directory
+          # setup: |
+          #   mkdir -p "${PWD}/artifacts"
+
+          # Mount the artifacts directory as /artifacts in the container
+          # dockerRunArgs: |
+          #   --volume "${PWD}/artifacts:/artifacts"
+          
+          # Pass some environment variables to the container
+          env: | # YAML, but pipe character is necessary
+            CC: gcc
+            CXX: g++
+            PLATFORM: ${{ matrix.arch }}
+            ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+          install: |
+            apt-get update -q -y
+            apt-get install -q -y --no-install-recommends cmake make build-essential gdb
+
+          run: |
+            pwd
+            ls -al "${PWD}"
+            echo "Clone LLVM"
+            # bash build/build.sh clone_llvm
+            echo "Build LLVM"
+            # bash build/build.sh build_llvm -platform $PLATFORM
+            echo "Package LLVM"
+            # bash build/build.sh package_llvm -platform $PLATFORM
+
+      - name: Show the artifacts
+        run: |
+          pwd
+          ls -al "${PWD}/build/llvm/"
+
+      # - name: 'Upload Artifact'
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: llvm
+      #     path: build/llvm/llvm-*-*.*
