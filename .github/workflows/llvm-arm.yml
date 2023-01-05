@@ -45,17 +45,17 @@ jobs:
 
           install: |
             apt-get update -q -y
-            apt-get install -q -y --no-install-recommends cmake make build-essential gdb
+            apt-get install -q -y --no-install-recommends cmake make build-essential gdb git
 
           run: |
             pwd
             ls -al "${PWD}"
             echo "Clone LLVM"
-            # bash build/build.sh clone_llvm
+            bash build/build.sh clone_llvm
             echo "Build LLVM"
-            # bash build/build.sh build_llvm -platform $PLATFORM
+            bash build/build.sh build_llvm -platform $PLATFORM
             echo "Package LLVM"
-            # bash build/build.sh package_llvm -platform $PLATFORM
+            bash build/build.sh package_llvm -platform $PLATFORM
 
       - name: Show the artifacts
         run: |
