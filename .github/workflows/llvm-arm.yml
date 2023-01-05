@@ -33,8 +33,7 @@ jobs:
           #   mkdir -p "${PWD}/artifacts"
 
           # Mount the artifacts directory as /artifacts in the container
-          dockerRunArgs: |
-            --platform linux/amd64
+          # dockerRunArgs: |
           #   --volume "${PWD}/artifacts:/artifacts"
           
           # Pass some environment variables to the container
