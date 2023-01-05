@@ -20,11 +20,12 @@ namespace CppSharp.Generators
 
         public override void Process()
         {
+            var constDefines = Platform.IsWindows ? "_WIN" : Platform.IsLinux ? "_LINUX" : "_MAC";
             var location = System.Reflection.Assembly.GetExecutingAssembly().Location;
             Write($@"
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <PlatformTarget>{(Context.TargetInfo.PointerWidth == 64 ? "x64" : "x86")}</PlatformTarget>
     <OutputPath>{Options.OutputDir}</OutputPath>
     <DocumentationFile>{module.LibraryName}.xml</DocumentationFile>
@@ -33,10 +34,18 @@ namespace CppSharp.Generators
     <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
     <EnableDefaultItems>false</EnableDefaultItems>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DefineConstants>{constDefines}</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     {string.Join(Environment.NewLine, module.CodeFiles.Select(c =>
   $"<Compile Include=\"{c}\" />"))}
+  </ItemGroup>
+  <ItemGroup>
+    {string.Join(Environment.NewLine, module.ReferencedAssemblies
+         .Select(reference =>
+ $@"<Reference Include=""{Path.GetFileNameWithoutExtension(reference)}"">
+      <HintPath>{reference}</HintPath>
+    </Reference>"))}
   </ItemGroup>
   <ItemGroup>
     {string.Join(Environment.NewLine,
