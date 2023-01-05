@@ -933,20 +933,21 @@ namespace CppSharp
 
         AST.RawComment VisitRawComment(RawComment rawComment)
         {
-            var _rawComment = new AST.RawComment
-            {
-                Kind = ConvertRawCommentKind(rawComment.Kind),
-                BriefText = rawComment.BriefText,
-                Text = rawComment.Text,
-            };
+            return null;
+            // var _rawComment = new AST.RawComment
+            // {
+            //     Kind = ConvertRawCommentKind(rawComment.Kind),
+            //     BriefText = rawComment.BriefText,
+            //     Text = rawComment.Text,
+            // };
 
-            if (rawComment.FullCommentBlock != null)
-                _rawComment.FullComment = commentConverter.Visit(rawComment.FullCommentBlock)
-                    as AST.FullComment;
+            // if (rawComment.FullCommentBlock != null)
+            //     _rawComment.FullComment = commentConverter.Visit(rawComment.FullCommentBlock)
+            //         as AST.FullComment;
 
-            NativeObjects.Add(rawComment);
+            // NativeObjects.Add(rawComment);
 
-            return _rawComment;
+            // return _rawComment;
         }
 
         private AST.CommentKind ConvertRawCommentKind(RawCommentKind kind)
