@@ -1,12 +1,12 @@
 #!/bin/sh
 
 DIR=$( cd "$( dirname "$0" )" && pwd )
-UNA="$(uname -s)"
-
+UNA="$(uname -a)"
+echo "$UNA"
 case "$UNA" in
 
-   Darwin|Linux)
-    if [[ $UNA =~ 'arm64' ]] | [[ $UNA =~ 'aarch64' ]]
+   *Darwin*|*Linux*)
+    if [[ "${UNA}" =~ "x86_64" ]] || [[ "${UNA}" =~ "arm64" ]] || [[ "${UNA}" =~ "aarch64" ]]
     then
         echo "ARM platform"
         premake5 "$@"        
@@ -16,7 +16,7 @@ case "$UNA" in
     fi
     ;;
 
-   CYGWIN*|MINGW32*|MSYS*|MINGW*)
+   *CYGWIN*|*MINGW32*|*MSYS*|*MINGW*)
      "$DIR/premake/premake5.exe" "$@"
      ;;
 
