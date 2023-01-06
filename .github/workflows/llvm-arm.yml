@@ -63,8 +63,8 @@ jobs:
           pwd
           ls -al "${PWD}/build/llvm/"
 
-      # - name: 'Upload Artifact'
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: llvm
-      #     path: build/llvm/llvm-*-*.*
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: llvm
+          path: build/llvm/llvm-*-*.*
