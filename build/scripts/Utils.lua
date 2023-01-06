@@ -94,7 +94,7 @@ function http.progress (total, prev, curr)
 end
 
 function downloadwget(url, file, try)
-  sudo("curl -L -o " .. file .. " " .. url)
+  execute("curl -L -o " .. file .. " " .. url)
   if os.isfile(file) then
     return "OK", 0
   else
