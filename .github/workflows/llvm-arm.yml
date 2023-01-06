@@ -51,7 +51,7 @@ jobs:
             pwd
             ls -al "${PWD}"
             echo "Clone LLVM"
-            bash build/build.sh clone_llvm
+            bash build/build.sh clone_llvm -platform $PLATFORM
             echo "Build LLVM"
             bash build/build.sh build_llvm -platform $PLATFORM
             echo "Package LLVM"
