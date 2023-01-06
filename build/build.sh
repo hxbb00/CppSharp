@@ -171,7 +171,6 @@ find_msbuild()
 
 cmd=$(tr '[:upper:]' '[:lower:]' <<< $1)
 detect_os
-download_premake
 
 while [[ $# > 0 ]]; do
   option=$(tr '[:upper:]' '[:lower:]' <<< "${1/#--/-}")
@@ -205,6 +204,8 @@ while [[ $# > 0 ]]; do
   esac
   shift
 done
+
+download_premake
 
 case "$cmd" in
   clean)
