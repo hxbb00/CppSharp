@@ -104,6 +104,7 @@ function downloadwget(url, file, try)
 
     return "FAIL", -1
   end
+end
 
 function download(url, file, try)
   print("Downloading: " .. url)
