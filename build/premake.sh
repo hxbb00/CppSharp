@@ -6,7 +6,7 @@ echo "$UNA"
 case "$UNA" in
 
    *Darwin*|*Linux*)
-    if [[ "${UNA}" =~ "x86_64" ]] || [[ "${UNA}" =~ "arm64" ]] || [[ "${UNA}" =~ "aarch64" ]]
+    if [[ "${UNA}" =~ "arm64" ]] || [[ "${UNA}" =~ "aarch64" ]]
     then
         echo "ARM platform"
         premake5 "$@"        
