@@ -45,7 +45,7 @@ jobs:
 
           install: |
             apt-get update -q -y
-            apt-get install -q -y --no-install-recommends cmake make build-essential gdb git apt-utils curl ca-certificates
+            apt-get install -q -y --no-install-recommends cmake make build-essential gdb git apt-utils curl ca-certificates unzip
 
           run: |
             pwd
