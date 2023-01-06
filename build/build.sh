@@ -110,7 +110,7 @@ download_premake()
 
   if ! [ -f "$premake_path" ]; then
     echo "Downloading and unpacking Premake..."
-    premake_url=https://github.com/InteropAlliance/premake-core/releases/download/latest/premake-$oshost-$platform.zip  
+    premake_url=https://github.com/hxbb00/premake-core/releases/download/latest/premake-$oshost-$platform.zip  
     curl -L -O $premake_url
     unzip premake-$oshost-$platform.zip $premake_filename -d "$premake_dir"
     chmod +x "$premake_path"
