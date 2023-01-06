@@ -110,7 +110,7 @@ function download(url, file, try)
   print("Downloading: " .. url)
   print(file)
 
-  if os.ishost("linux") and string.match(file, "aarch") ~= nil then
+  if os.ishost("linux") then
     return downloadwget(url, file, try)
   else
 
