@@ -9,7 +9,7 @@ case "$UNA" in
     if [[ "${UNA}" =~ "arm64" ]] || [[ "${UNA}" =~ "aarch64" ]]
     then
         echo "ARM platform"
-        premake5 "$@"        
+        "$DIR/premake/premake5" "$@" 
     else
         echo "X86 platform"
         "$DIR/premake/premake5" "$@"

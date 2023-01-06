@@ -93,23 +93,42 @@ function http.progress (total, prev, curr)
   end
 end
 
+function downloadwget(url, file, try)
+  sudo("curl -L -o " .. file .. " " .. url)
+  if os.isfile(file) then
+    return "OK", 0
+  else
+    if not try then
+      error("download " .. file .. " fail")
+    end
+
+    return "FAIL", -1
+  end
+
 function download(url, file, try)
   print("Downloading: " .. url)
-  local prev = 0
-  local res, code = http.download(url, file, function(total, curr)
-    http.progress(total, prev, curr)
-    prev = curr
-  end)
 
-  if res ~= "OK" then
-    os.remove(file)
+  if os.ishost("linux") and string.match(file, "aarch") then
+    return downloadwget(url, file, try)
+  else
 
-    if not try then
-      error(res)
+    local prev = 0
+    local res, code = http.download(url, file, function(total, curr)
+      http.progress(total, prev, curr)
+      prev = curr
+    end)
+
+    if res ~= "OK" then
+      os.remove(file)
+
+      if not try then
+        error(res)
+      end
     end
+    
+    return res, code
+
   end
-  
-  return res, code
 end
 
 --
