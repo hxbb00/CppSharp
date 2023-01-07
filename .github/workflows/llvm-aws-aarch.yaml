@@ -33,7 +33,7 @@ jobs:
 
       - name: Clone LLVM
         shell: bash
-        run: sudo build/build.sh clone_llvm
+        run: sudo build/build.sh clone_llvm -platform $PLATFORM
           
       - name: Build LLVM
         shell: bash
