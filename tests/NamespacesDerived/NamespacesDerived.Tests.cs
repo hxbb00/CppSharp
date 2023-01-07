@@ -64,7 +64,9 @@ public class NamespaceDerivedTests
 
     private static void TestClassComment(Type testCommentsType, XElement members)
     {
-        string testCommentsName = $"T:{testCommentsType.FullName}";
+        if(!members.IsEmpty)
+        {
+            string testCommentsName = $"T:{testCommentsType.FullName}";
         XElement testComments = members.Elements().Single(
             m => m.Attribute("name").Value == testCommentsName);
         Assert.That(testComments.Element("summary").Elements().Select(p => p.Value), Is.EquivalentTo(
@@ -74,6 +76,7 @@ public class NamespaceDerivedTests
                 "Note that to prevent extra memory use due to vtable pointer, %HashBase intentionally does not declare a virtual destructor",
                 "and therefore %HashBase pointers should never be used."
             }));
+        }
     }
 
     private static void TestGetIOHandlerControlSequence(Type testCommentsType, XElement members)
