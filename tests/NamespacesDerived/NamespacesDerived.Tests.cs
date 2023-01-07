@@ -64,7 +64,7 @@ public class NamespaceDerivedTests
 
     private static void TestClassComment(Type testCommentsType, XElement members)
     {
-        if(!members.IsEmpty)
+        if(members.Elements().Count()>0)
         {
             string testCommentsName = $"T:{testCommentsType.FullName}";
         XElement testComments = members.Elements().Single(
