@@ -1,4 +1,4 @@
-name: LLVM
+name: LLVM-aws-aarch64
 
 on:
     workflow_dispatch:
