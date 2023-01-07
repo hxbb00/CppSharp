@@ -27,21 +27,21 @@ jobs:
       - name: apt-gets
         shell: bash
         run: |
-            apt-get update -q -y
-            apt-get install -q -y --no-install-recommends cmake make build-essential gdb git apt-utils curl unzip ca-certificates
-            apt-get install -q -y --no-install-recommends ninja-build python3-dev
+            sudo apt-get update -q -y
+            sudo apt-get install -q -y --no-install-recommends cmake make build-essential gdb git apt-utils curl unzip ca-certificates
+            sudo apt-get install -q -y --no-install-recommends ninja-build python3-dev
 
       - name: Clone LLVM
         shell: bash
-        run: build/build.sh clone_llvm
+        run: sudo build/build.sh clone_llvm
           
       - name: Build LLVM
         shell: bash
-        run: build/build.sh build_llvm -platform $PLATFORM
+        run: sudo build/build.sh build_llvm -platform $PLATFORM
 
       - name: Package LLVM
         shell: bash
-        run: build/build.sh package_llvm -platform $PLATFORM
+        run: sudo build/build.sh package_llvm -platform $PLATFORM
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
