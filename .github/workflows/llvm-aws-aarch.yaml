@@ -1,0 +1,43 @@
+name: LLVM
+
+on:
+    workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: aws-aarch64, platform: aarch64, cxx: g++-9, cc: gcc-9 }
+          - { os: aws-aarch64, platform: aarch64, cxx: g++-10, cc: gcc-10 }
+
+    runs-on: ${{ matrix.config.os }}
+
+    env:
+      CC: ${{ matrix.config.cc }}
+      CXX: ${{ matrix.config.cxx }}
+      PLATFORM: ${{ matrix.config.platform }}
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: lukka/get-cmake@latest
+
+      - name: Clone LLVM
+        shell: bash
+        run: build/build.sh clone_llvm
+          
+      - name: Build LLVM
+        shell: bash
+        run: build/build.sh build_llvm -platform $PLATFORM
+
+      - name: Package LLVM
+        shell: bash
+        run: build/build.sh package_llvm -platform $PLATFORM
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: llvm
+          path: build/llvm/llvm-*-*.*
