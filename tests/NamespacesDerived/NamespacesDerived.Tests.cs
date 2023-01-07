@@ -171,6 +171,8 @@ public class NamespaceDerivedTests
 
     private static XElement FindMethod(Type testCommentsType, XElement members, string name)
     {
+        if(members.Elements().Count()>0){
+            
         string fullName = $"M:{testCommentsType.FullName}.{name}";
         return members.Elements().Single(
             m =>
@@ -178,6 +180,7 @@ public class NamespaceDerivedTests
                 string name = m.Attribute("name").Value;
                 return name.Substring(0, Math.Max(name.IndexOf('('), 0)) == fullName;
             });
+        }
     }
 
     private class OverrideMethodFromDependency : HasVirtualInDependency
