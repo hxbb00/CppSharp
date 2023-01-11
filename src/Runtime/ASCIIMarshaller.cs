@@ -7,6 +7,7 @@ namespace CppSharp.Runtime
     // HACK: .NET Standard 2.0 which we use in auto-building to support .NET Framework, lacks UnmanagedType.LPUTF8Str
     public class ASCIIMarshaller : ICustomMarshaler
     {
+        int m_size = -1;
         public void CleanUpManagedData(object ManagedObj)
         {
         }
@@ -14,7 +15,11 @@ namespace CppSharp.Runtime
         public void CleanUpNativeData(IntPtr pNativeData)
             => Marshal.FreeHGlobal(pNativeData);
 
-        public int GetNativeDataSize() => -1;
+        public int GetNativeDataSize() {
+
+            return m_size;
+
+        }
 
         public IntPtr MarshalManagedToNative(object managedObj)
         {
@@ -25,12 +30,7 @@ namespace CppSharp.Runtime
                     "UTF8Marshaler must be used on a string.");
 
             // not null terminated
-            byte[] strbuf = Encoding.GetEncoding("gb2312").GetBytes((string)managedObj);
-            IntPtr buffer = Marshal.AllocHGlobal(strbuf.Length + 1);
-            Marshal.Copy(strbuf, 0, buffer, strbuf.Length);
-
-            // write the terminating null
-            Marshal.WriteByte(buffer + strbuf.Length, 0);
+            IntPtr buffer = Marshal.StringToHGlobalAnsi((string)managedObj);
             return buffer;
         }
 
@@ -39,11 +39,9 @@ namespace CppSharp.Runtime
             if (str == IntPtr.Zero)
                 return null;
 
-            int byteCount = 0;
-            var str8 = (byte*)str;
-            while (*(str8++) != 0) byteCount += sizeof(byte);
+            var strAnsi = Marshal.PtrToStringAnsi(str);
 
-            return Encoding.GetEncoding("gb2312").GetString((byte*)str, byteCount);
+            return strAnsi;
         }
 
         public static ICustomMarshaler GetInstance(string pstrCookie)
