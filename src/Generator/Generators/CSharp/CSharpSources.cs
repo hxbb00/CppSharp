@@ -65,6 +65,16 @@ namespace CppSharp.Generators.CSharp
 
         public static string SafeIdentifier(string id)
         {
+            var real = SafeIdentifier_Real(id);
+            if (Regex.IsMatch(real.Substring(0, 1), "\\d"))
+            {
+                return $"_{real}";
+            }
+
+            return real;
+        }
+        public static string SafeIdentifier_Real(string id)
+        {
             if (id.All(char.IsLetterOrDigit))
                 return ReservedKeywords.Contains(id) ? "@" + id : id;
 
@@ -2383,7 +2393,7 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
                 TypePrinterResult printedClass = @class.Visit(TypePrinter);
                 printedClass.RemoveNamespace();
 
-                WriteLine("internal static {0}{1} {2}({3} native, bool skipVTables = false)",
+                WriteLine("public static {0}{1} {2}({3} native, bool skipVTables = false)",
                     @class.NeedsBase && !@class.BaseClass.IsInterface ? "new " : string.Empty,
                     printedClass, Helpers.CreateInstanceIdentifier, TypePrinter.IntPtrType);
                 WriteOpenBraceAndIndent();
@@ -2498,7 +2508,7 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
             {
                 returnType.RemoveNamespace();
                 PushBlock(BlockKind.Method);
-                WriteLine("internal static {0} {1}({2} native, bool skipVTables = false)",
+                WriteLine("public static {0} {1}({2} native, bool skipVTables = false)",
                     returnType, Helpers.CreateInstanceIdentifier, @internal);
                 WriteOpenBraceAndIndent();
                 var suffix = @class.IsAbstract ? "Internal" : "";
@@ -2537,7 +2547,7 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
 
         private void Generate__CopyValue(Class @class, string @internal)
         {
-            using (WriteBlock($"private static void* __CopyValue({@internal} native)"))
+            using (WriteBlock($"public static void* __CopyValue({@internal} native)"))
             {
                 var copyCtorMethod = @class.Methods.FirstOrDefault(method => method.IsCopyConstructor);
                 
