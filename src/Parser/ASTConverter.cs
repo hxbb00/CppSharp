@@ -2176,14 +2176,14 @@ namespace CppSharp
         protected override AST.Comment VisitHTMLStartTagComment(HTMLStartTagComment comment)
         {
             var htmlStartTagComment = new AST.HTMLStartTagComment();
-            for (uint i = 0; i < comment.AttributesCount; i++)
-            {
-                var attribute = new AST.HTMLStartTagComment.Attribute();
-                var _attribute = comment.GetAttributes(i);
-                attribute.Name = _attribute.Name;
-                attribute.Value = _attribute.Value;
-                htmlStartTagComment.Attributes.Add(attribute);
-            }
+            // for (uint i = 0; i < comment.AttributesCount; i++)
+            // {
+            //     var attribute = new AST.HTMLStartTagComment.Attribute();
+            //     var _attribute = comment.GetAttributes(i);
+            //     attribute.Name = _attribute.Name;
+            //     attribute.Value = _attribute.Value;
+            //     htmlStartTagComment.Attributes.Add(attribute);
+            // }
             htmlStartTagComment.TagName = comment.TagName;
             htmlStartTagComment.HasTrailingNewline = comment.HasTrailingNewline;
             return htmlStartTagComment;
