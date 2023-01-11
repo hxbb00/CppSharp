@@ -66,7 +66,7 @@ namespace CppSharp.Generators.CSharp
         public static string SafeIdentifier(string id)
         {
             var real = SafeIdentifier_Real(id);
-            if (Regex.IsMatch(real.Substring(0, 1), "\\d"))
+            if (!string.IsNullOrEmpty(real) && char.IsDigit(real[0]))
             {
                 return $"_{real}";
             }
