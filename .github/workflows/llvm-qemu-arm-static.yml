@@ -22,13 +22,13 @@ jobs:
 
     steps:
 
-      - name: build qemu-arm-static
+      - name: build qemu-aarch64-static qemu-user-static
         shell: bash
         run: |
           sudo apt-get install -q -y --no-install-recommends qemu-user-static
-          sudo wget https://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.5-base-arm64.tar.gz
+          sudo wget https://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.1-base-arm64.tar.gz
           sudo mkdir rootfs
-          sudo tar zxvf ubuntu-base-20.04.5-base-arm64.tar.gz -C rootfs/
+          sudo tar zxf ubuntu-base-20.04.5-base-arm64.tar.gz -C rootfs/
           sudo cp /usr/bin/qemu-arm-static rootfs/usr/bin/
           sudo cp /etc/resolv.conf rootfs/etc/resolv.conf
           sudo mount -t proc /proc rootfs/proc
