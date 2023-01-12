@@ -11,7 +11,7 @@ jobs:
           - arch: aarch64
             distro: ubuntu20.04
 
-    runs-on: gms
+    runs-on: mydev
 
     name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
 
