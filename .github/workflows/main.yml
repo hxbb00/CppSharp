@@ -82,6 +82,8 @@ jobs:
   create_package:
     runs-on: windows-2019
     needs: build
+      (github.event_name == 'push' && (github.ref == 'refs/heads/main' || contains(github.ref, 'nuget') || startsWith(github.ref, 'refs/tags/v'))) ||
+      (github.event.pull_request.head.repo.full_name != github.repository && (contains(github.event.pull_request.head.ref, 'nuget') || startsWith(github.event.pull_request.head.ref, 'refs/tags/v')))
 
     env:
       DOTNET_NOLOGO: true
@@ -118,3 +120,9 @@ jobs:
         run: |
           cd artifacts
           dotnet nuget push "*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/hxbb00/index.json" --skip-duplicate
+
+      - name: Publish package to nuget.org
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd artifacts
+          dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source "https://api.nuget.org/v3/index.json" --skip-duplicate
