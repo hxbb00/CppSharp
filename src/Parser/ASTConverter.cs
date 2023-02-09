@@ -933,21 +933,20 @@ namespace CppSharp
 
         AST.RawComment VisitRawComment(RawComment rawComment)
         {
-            return null;
-            // var _rawComment = new AST.RawComment
-            // {
-            //     Kind = ConvertRawCommentKind(rawComment.Kind),
-            //     BriefText = rawComment.BriefText,
-            //     Text = rawComment.Text,
-            // };
+            var _rawComment = new AST.RawComment
+            {
+                Kind = ConvertRawCommentKind(rawComment.Kind),
+                BriefText = rawComment.BriefText,
+                Text = rawComment.Text,
+            };
 
-            // if (rawComment.FullCommentBlock != null)
-            //     _rawComment.FullComment = commentConverter.Visit(rawComment.FullCommentBlock)
-            //         as AST.FullComment;
+            if (rawComment.FullCommentBlock != null)
+                _rawComment.FullComment = commentConverter.Visit(rawComment.FullCommentBlock)
+                    as AST.FullComment;
 
-            // NativeObjects.Add(rawComment);
+            NativeObjects.Add(rawComment);
 
-            // return _rawComment;
+            return _rawComment;
         }
 
         private AST.CommentKind ConvertRawCommentKind(RawCommentKind kind)
@@ -2177,14 +2176,14 @@ namespace CppSharp
         protected override AST.Comment VisitHTMLStartTagComment(HTMLStartTagComment comment)
         {
             var htmlStartTagComment = new AST.HTMLStartTagComment();
-            for (uint i = 0; i < comment.AttributesCount; i++)
-            {
-                var attribute = new AST.HTMLStartTagComment.Attribute();
-                var _attribute = comment.GetAttributes(i);
-                attribute.Name = _attribute.Name;
-                attribute.Value = _attribute.Value;
-                htmlStartTagComment.Attributes.Add(attribute);
-            }
+            // for (uint i = 0; i < comment.AttributesCount; i++)
+            // {
+            //     var attribute = new AST.HTMLStartTagComment.Attribute();
+            //     var _attribute = comment.GetAttributes(i);
+            //     attribute.Name = _attribute.Name;
+            //     attribute.Value = _attribute.Value;
+            //     htmlStartTagComment.Attributes.Add(attribute);
+            // }
             htmlStartTagComment.TagName = comment.TagName;
             htmlStartTagComment.HasTrailingNewline = comment.HasTrailingNewline;
             return htmlStartTagComment;

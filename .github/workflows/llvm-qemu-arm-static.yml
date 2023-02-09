@@ -1,0 +1,36 @@
+name: LLVM-qemu-arm-static
+
+on:
+    workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: ubuntu-20.04, platform: x64, cxx: g++-9, cc: gcc-9 }
+          - { os: ubuntu-20.04, platform: x64, cxx: g++-10, cc: gcc-10 }
+
+    runs-on: ${{ matrix.config.os }}
+
+    env:
+      CC: ${{ matrix.config.cc }}
+      CXX: ${{ matrix.config.cxx }}
+      PLATFORM: ${{ matrix.config.platform }}
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    steps:
+
+      - name: build qemu-aarch64-static
+        shell: bash
+        run: |
+          sudo apt-get install -q -y --no-install-recommends qemu-user-static
+          find /usr/bin -name qemu*
+          sudo wget https://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.1-base-arm64.tar.gz
+          sudo mkdir rootfs
+          sudo tar zxf ubuntu-base-20.04.1-base-arm64.tar.gz -C rootfs/
+          sudo cp /usr/bin/qemu-aarch64-static rootfs/usr/bin/
+          sudo cp /etc/resolv.conf rootfs/etc/resolv.conf
+          sudo chroot rootfs
+          uname -a

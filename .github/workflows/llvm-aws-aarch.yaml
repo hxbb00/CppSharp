@@ -1,0 +1,50 @@
+name: LLVM-aws-aarch64
+
+on:
+    workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: ARM64, platform: aarch64, cxx: g++-9, cc: gcc-9 }
+          - { os: ARM64, platform: aarch64, cxx: g++-10, cc: gcc-10 }
+
+    runs-on: ${{ matrix.config.os }}
+
+    env:
+      CC: ${{ matrix.config.cc }}
+      CXX: ${{ matrix.config.cxx }}
+      PLATFORM: ${{ matrix.config.platform }}
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: lukka/get-cmake@latest
+
+      - name: apt-gets
+        shell: bash
+        run: |
+            sudo apt-get update -q -y
+            sudo apt-get install -q -y --no-install-recommends cmake make build-essential gdb git apt-utils curl unzip ca-certificates
+            sudo apt-get install -q -y --no-install-recommends ninja-build python3-dev
+
+      - name: Clone LLVM
+        shell: bash
+        run: sudo build/build.sh clone_llvm -platform $PLATFORM
+          
+      - name: Build LLVM
+        shell: bash
+        run: sudo build/build.sh build_llvm -platform $PLATFORM
+
+      - name: Package LLVM
+        shell: bash
+        run: sudo build/build.sh package_llvm -platform $PLATFORM
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: llvm
+          path: build/llvm/llvm-*-*.*

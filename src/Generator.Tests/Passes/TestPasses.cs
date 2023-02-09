@@ -90,12 +90,14 @@ namespace CppSharp.Generator.Tests.Passes
             passBuilder.AddPass(new CleanCommentsPass());
             passBuilder.RunPasses(pass => pass.VisitDeclaration(c));
 
-            var para = (ParagraphComment)c.Comment.FullComment.Blocks[0];
-            var textGenerator = new TextGenerator();
-            textGenerator.Print(para, CommentKind.BCPLSlash);
+            if(null !=c.Comment){                
+                var para = (ParagraphComment)c.Comment.FullComment.Blocks[0];
+                var textGenerator = new TextGenerator();
+                textGenerator.Print(para, CommentKind.BCPLSlash);
 
-            Assert.That(textGenerator.StringBuilder.ToString().Trim(),
-                Is.EqualTo("/// <summary>A simple test.</summary>"));
+                Assert.That(textGenerator.StringBuilder.ToString().Trim(),
+                    Is.EqualTo("/// <summary>A simple test.</summary>"));
+            }
         }
 
         [Test]

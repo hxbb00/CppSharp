@@ -6,14 +6,7 @@ echo "$UNA"
 case "$UNA" in
 
    *Darwin*|*Linux*)
-    if [[ "${UNA}" =~ "arm64" ]] || [[ "${UNA}" =~ "aarch64" ]]
-    then
-        echo "ARM platform"
-        premake5 "$@"        
-    else
-        echo "X86 platform"
-        "$DIR/premake/premake5" "$@"
-    fi
+    "$DIR/premake/premake5" "$@"
     ;;
 
    *CYGWIN*|*MINGW32*|*MSYS*|*MINGW*)

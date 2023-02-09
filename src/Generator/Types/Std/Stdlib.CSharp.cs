@@ -167,7 +167,7 @@ namespace CppSharp.Types.Std
                     ctx.Before.WriteLine($@"var {bytePtr} = Marshal.StringToHGlobalUni({param});");
                     break;
                 case nameof(Encoding.Default):
-                    ctx.Before.WriteLine($@"var {bytePtr} = Marshal.StringToHGlobalAnsi({param});");
+                    ctx.Before.WriteLine($@"var {bytePtr} = CppSharp.Runtime.ASCIIMarshaller.MarshalManagedToNativeANSI({param});");
                     break;
                 default:
                     {
@@ -211,9 +211,15 @@ namespace CppSharp.Types.Std
                     returnVarName = $"new global::System.IntPtr(*{returnVarName})";
                 }
             }
-
-            var encoding = $"global::System.Text.Encoding.{GetEncoding().Name}";
-            ctx.Return.Write($@"CppSharp.Runtime.MarshalUtil.GetString({encoding}, {returnVarName})");
+            var encodingName = GetEncoding().Name;
+            if(nameof(Encoding.Default) == encodingName){
+                var encoding = $"global::CppSharp.Runtime.ASCIIMarshaller.ANSI";
+                ctx.Return.Write($@"CppSharp.Runtime.MarshalUtil.GetString({encoding}, {returnVarName})");
+            }
+            else{
+                var encoding = $"global::System.Text.Encoding.{encodingName}";
+                ctx.Return.Write($@"CppSharp.Runtime.MarshalUtil.GetString({encoding}, {returnVarName})");
+            }
         }
 
         private (Encoding Encoding, string Name) GetEncoding()
