@@ -82,8 +82,6 @@ jobs:
   create_package:
     runs-on: windows-2019
     needs: build
-      (github.event_name == 'push' && (github.ref == 'refs/heads/main' || contains(github.ref, 'nuget'))) ||
-      (github.event.pull_request.head.repo.full_name != github.repository && (contains(github.event.pull_request.head.ref, 'nuget')))
 
     env:
       DOTNET_NOLOGO: true
