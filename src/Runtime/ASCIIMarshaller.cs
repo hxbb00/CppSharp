@@ -44,7 +44,7 @@ namespace CppSharp.Runtime
             return NativeANSIToMarshalManaged(str);
         }
 
-        public static object NativeANSIToMarshalManaged(IntPtr str)
+        public static unsafe object NativeANSIToMarshalManaged(IntPtr str)
         {
             if (str == IntPtr.Zero)
                 return null;
