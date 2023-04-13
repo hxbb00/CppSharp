@@ -974,7 +974,7 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
             var libraryPath = GetLibraryOf(var);
 
             if (!LibrarySymbolTables.TryGetValue(libraryPath, out var lib))
-                LibrarySymbolTables[libraryPath] = lib = new CSharpLibrarySymbolTable(libraryPath, Module.OutputNamespace);
+                LibrarySymbolTables[libraryPath] = lib = new CSharpLibrarySymbolTable(libraryPath, var.TranslationUnit.FileName, Module.OutputNamespace);
 
             var location = lib.GetFullVariablePath(var.Mangled);
 

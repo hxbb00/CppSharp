@@ -13,10 +13,10 @@ namespace CppSharp.Generators.CSharp
         private readonly string @class;
         private int counter = 0;
 
-        public CSharpLibrarySymbolTable(string path, string @namespace)
+        public CSharpLibrarySymbolTable(string path,string fileName, string @namespace)
         {
             this.path = path;
-            @class = identifierCleanerRegex.Replace(path, "_");
+            @class = identifierCleanerRegex.Replace($"{fileName}{path}", "_");
             this.@namespace = (!string.IsNullOrEmpty(@namespace) ? @namespace : @class) + ".__Symbols";
         }
 
