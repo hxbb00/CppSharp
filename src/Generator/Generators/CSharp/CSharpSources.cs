@@ -2331,11 +2331,9 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
                     else
                         Indent();
                     if (dtor.IsVirtual)
-{
-                            // this.GenerateMember(@class, c => GenerateDestructorCall(
-                        //     c is ClassTemplateSpecialization ?
-                        //         c.Methods.First(m => m.InstantiatedFrom == dtor) : dtor));
-}
+                        this.GenerateMember(@class, c => GenerateDestructorCall(
+                            c is ClassTemplateSpecialization ?
+                                c.Methods.First(m => m.InstantiatedFrom == dtor) : dtor));
                     else
                         this.GenerateMember(@class, c => GenerateMethodBody(c, dtor));
                     if (@class.IsDependent || dtor.IsVirtual)
@@ -2367,7 +2365,7 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
         private bool GenerateDestructorCall(Method dtor)
         {
             var @class = (Class)dtor.Namespace;
-            GenerateVirtualFunctionCall(dtor, true);
+            GenerateVirtualFunctionCall(dtor, false);
             if (@class.IsAbstract)
             {
                 UnindentAndWriteCloseBrace();
