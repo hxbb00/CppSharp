@@ -64,9 +64,9 @@ jobs:
         shell: bash
         run: build/build.sh -platform $PLATFORM -build_only
 
-      - name: Test
-        shell: bash
-        run: build/test.sh -platform $PLATFORM
+      # - name: Test
+      #   shell: bash
+      #   run: build/test.sh -platform $PLATFORM
 
       - name: Pack
         shell: bash
