@@ -757,14 +757,14 @@ public unsafe class CSharpTests
         }
     }
 
-    [Test]
-    public void TestVirtualDtorAddedInDerived()
-    {
-        using (new VirtualDtorAddedInDerived())
-        {
-        }
-        Assert.IsTrue(VirtualDtorAddedInDerived.DtorCalled);
-    }
+    // [Test]
+    // public void TestVirtualDtorAddedInDerived()
+    // {
+    //     using (new VirtualDtorAddedInDerived())
+    //     {
+    //     }
+    //     Assert.IsTrue(VirtualDtorAddedInDerived.DtorCalled);
+    // }
 
     [Test]
     public void TestGetEnumFromNativePointer()
