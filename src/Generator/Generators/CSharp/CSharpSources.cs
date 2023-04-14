@@ -2280,11 +2280,11 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
                 var classInternal = TypePrinter.PrintNative(realClass);
                 if (@class.IsDynamic && GetUniqueVTableMethodEntries(realClass).Count != 0)
                 {
-                    for (int i = 0; i < realClass.Layout.VTablePointers.Count; i++)
-                    {
-                        var offset = realClass.Layout.VTablePointers[i].Offset;
-                        WriteLine($"*(IntPtr*)({Helpers.InstanceIdentifier} + {offset}) = __VTables.Tables[{i}];");
-                    }
+                    // for (int i = 0; i < realClass.Layout.VTablePointers.Count; i++)
+                    // {
+                    //     var offset = realClass.Layout.VTablePointers[i].Offset;
+                    //     WriteLine($"*(IntPtr*)({Helpers.InstanceIdentifier} + {offset}) = __VTables.Tables[{i}];");
+                    // }
                 }
             }
 
