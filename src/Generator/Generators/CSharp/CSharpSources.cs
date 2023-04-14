@@ -2430,6 +2430,17 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetOrCreateInst
     return result;
 }}");
                         NewLine();
+                    }else{
+                                                WriteLines($@"
+internal static{(@new ? " new" : string.Empty)} {printedClass} __GetOrCreateInstance({TypePrinter.IntPtrType} native, bool saveInstance = false, bool skipVTables = false)
+{{
+    if (native == {TypePrinter.IntPtrType}.Zero)
+        return null;
+
+    var result = {Helpers.CreateInstanceIdentifier}(native, skipVTables);
+    return result;
+}}");
+                        NewLine();
                     }
 
                     // __GetInstance doesn't work without a ManagedToNativeMap, so don't generate it
