@@ -2326,22 +2326,27 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
                     // 
                     // IDisposable.Dispose() and Object.Finalize() set callNativeDtor = Helpers.OwnsNativeInstanceIdentifier
                     WriteLine("if (callNativeDtor)");
-                    if (@class.IsDependent || dtor.IsVirtual)
-                        WriteOpenBraceAndIndent();
-                    else
-                        Indent();
-                    if (dtor.IsVirtual)
-                    {
-                        this.GenerateMember(@class, c => GenerateDestructorCall(
-                        c is ClassTemplateSpecialization ?
-                            c.Methods.First(m => m.InstantiatedFrom == dtor) : dtor));
-                    }
-                    else
-                        this.GenerateMember(@class, c => GenerateMethodBody(c, dtor));
-                    if (@class.IsDependent || dtor.IsVirtual)
-                        UnindentAndWriteCloseBrace();
-                    else
-                        Unindent();
+                    //if (@class.IsDependent || dtor.IsVirtual)
+                    //    WriteOpenBraceAndIndent();
+                    //else
+                    //    Indent();
+                    //if (dtor.IsVirtual)
+                    //{
+                    //    this.GenerateMember(@class, c => GenerateDestructorCall(
+                    //    c is ClassTemplateSpecialization ?
+                    //        c.Methods.First(m => m.InstantiatedFrom == dtor) : dtor));
+                    //}
+                    //else
+                    //    this.GenerateMember(@class, c => GenerateMethodBody(c, dtor));
+                    //if (@class.IsDependent || dtor.IsVirtual)
+                    //    UnindentAndWriteCloseBrace();
+                    //else
+                    //    Unindent();
+
+
+                    WriteOpenBraceAndIndent();
+                    this.GenerateMember(@class, c => GenerateMethodBody(c, dtor));
+                    UnindentAndWriteCloseBrace();
                 }
             }
 
