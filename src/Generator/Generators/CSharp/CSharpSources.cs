@@ -2344,9 +2344,9 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
                     //    Unindent();
 
 
-                    Indent();
-                    this.GenerateMember(@class, c => GenerateMethodBody(c, dtor));
-                    Unindent();
+                    WriteOpenBraceAndIndent();
+                    this.GenerateMember(@class, c => GenerateInternalFunctionCall(dtor));
+                    UnindentAndWriteCloseBrace();
                 }
             }
 
