@@ -36,6 +36,10 @@ jobs:
       - name: Display dotnet version
         run: dotnet --version
 
+      - name: Uninstall nbgv
+        run: |
+          dotnet tool uninstall --global nbgv
+
       - name: Install nbgv
         run: |
           dotnet tool install --global nbgv --version 3.5.119
