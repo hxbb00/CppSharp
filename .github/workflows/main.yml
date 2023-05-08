@@ -37,9 +37,8 @@ jobs:
         run: dotnet --version
 
       - name: Install nbgv
-        if: startsWith(matrix.config.os, 'macos')
         run: |
-          dotnet tool install -g nbgv
+          dotnet tool install --global nbgv --version 3.5.119
 
       - name: Set version
         run: nbgv cloud --all-vars
