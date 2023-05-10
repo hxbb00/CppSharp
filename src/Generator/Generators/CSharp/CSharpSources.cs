@@ -2385,7 +2385,7 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
             if (@class.IsRefType && shouldGenerateClassNativeField)
             {
                 PushBlock(BlockKind.Field);
-                WriteLine("protected bool {0};", Helpers.OwnsNativeInstanceIdentifier);
+                WriteLine("Internal protected bool {0};", Helpers.OwnsNativeInstanceIdentifier);
                 PopBlock(NewLineKind.BeforeNextBlock);
             }
 
