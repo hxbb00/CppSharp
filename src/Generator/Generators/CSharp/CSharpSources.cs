@@ -2381,6 +2381,7 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
 
         private void GenerateNativeConstructor(Class @class)
         {
+            WriteLine("internal protected string {0};", "__debugCallerMemberName");
             var shouldGenerateClassNativeField = ShouldGenerateClassNativeField(@class);
             if (@class.IsRefType && shouldGenerateClassNativeField)
             {
@@ -2634,8 +2635,16 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
             var printedType = method.OriginalReturnType.Visit(TypePrinter);
             var parameters = FormatMethodParameters(method.Parameters);
 
-            if (method.IsConstructor || method.IsDestructor)
+            if (method.IsConstructor)
+            {
+                if(string.IsNullOrEmpty(parameters)){
+                    Write($"{functionName}([System.Runtime.CompilerServices.CallerMemberName] string _dbg_member = null)");
+                }else{
+                    Write($"{functionName}({parameters}, [System.Runtime.CompilerServices.CallerMemberName] string _dbg_member = null)");
+                }
+            }else if (method.IsDestructor){
                 Write($"{functionName}({parameters})");
+            }
             else if (method.ExplicitInterfaceImpl != null)
                 Write($"{printedType} {method.ExplicitInterfaceImpl.Name}.{functionName}({parameters})");
             else if (method.OperatorKind == CXXOperatorKind.Conversion || method.OperatorKind == CXXOperatorKind.ExplicitConversion)
@@ -2686,6 +2695,9 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
             }
 
             WriteOpenBraceAndIndent();
+            if (method.IsConstructor){
+                WriteLineIndent("this.__debugCallerMemberName = _dbg_member;");
+            }
 
             if (method.IsProxy)
                 goto SkipImpl;
