@@ -2381,10 +2381,10 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
 
         private void GenerateNativeConstructor(Class @class)
         {
-            WriteLine("internal protected string {0};", "__debugCallerMemberName");
             var shouldGenerateClassNativeField = ShouldGenerateClassNativeField(@class);
             if (@class.IsRefType && shouldGenerateClassNativeField)
             {
+                WriteLine("private string {0};", "__debugCallerMemberName");
                 PushBlock(BlockKind.Field);
                 WriteLine("internal protected bool {0};", Helpers.OwnsNativeInstanceIdentifier);
                 PopBlock(NewLineKind.BeforeNextBlock);
@@ -2638,9 +2638,9 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
             if (method.IsConstructor)
             {
                 if(string.IsNullOrEmpty(parameters)){
-                    Write($"{functionName}([System.Runtime.CompilerServices.CallerMemberName] string _dbg_member = null)");
+                    Write($"{functionName}([global::System.Runtime.CompilerServices.CallerMemberName] string _dbg_member = null)");
                 }else{
-                    Write($"{functionName}({parameters}, [System.Runtime.CompilerServices.CallerMemberName] string _dbg_member = null)");
+                    Write($"{functionName}({parameters}, [global::System.Runtime.CompilerServices.CallerMemberName] string _dbg_member = null)");
                 }
             }else if (method.IsDestructor){
                 Write($"{functionName}({parameters})");
@@ -2696,7 +2696,9 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
 
             WriteOpenBraceAndIndent();
             if (method.IsConstructor){
-                WriteLineIndent("this.__debugCallerMemberName = _dbg_member;");
+                var shouldGenerateClassNativeField = ShouldGenerateClassNativeField(@class);
+                if (@class.IsRefType && shouldGenerateClassNativeField)
+                    WriteLineIndent("this.__debugCallerMemberName = _dbg_member;");
             }
 
             if (method.IsProxy)
