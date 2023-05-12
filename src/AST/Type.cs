@@ -623,7 +623,7 @@ namespace CppSharp.AST
                 case ArgumentKind.Expression:
                     return true;
                 default:
-                    throw new Exception("Unknown TemplateArgument Kind");
+                    throw new Exception($"Unknown TemplateArgument Kind: {Kind} : {Type} : {Declaration}");
             }
         }
 
