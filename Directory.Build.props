@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <RootDir>$(MSBuildThisFileDirectory)</RootDir>
-    <Platforms>x86;x64</Platforms>
+    <Platforms>x86;x64;ARM64;ARM32</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>    
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

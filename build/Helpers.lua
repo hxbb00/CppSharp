@@ -10,6 +10,7 @@ newoption {
    allowed = {
       { "x86",  "x86 32-bits" },
       { "x64",  "x64 64-bits" },
+      { "aarch64",  "ARM 64-bits" },
    }
 }
 
@@ -89,6 +90,19 @@ end
 
 function target_architecture()
   return _OPTIONS["arch"]
+end
+
+function target_dotnet_architecture()
+  local arch_v = _OPTIONS["arch"]
+  if arch_v == "x86" then
+    return "x86"
+	elseif arch_v == "x64" then
+		return "x64"
+	elseif arch_v == "aarch64" then
+		return "ARM64"
+	else
+		error("Cannot map to dotnet architecture")
+	end
 end
 
 function SetupNativeProject()
@@ -257,6 +271,8 @@ function AddPlatformSpecificFiles(folder, filename)
   elseif os.istarget("linux") then
     filter { "architecture:x86_64" }
       files { path.join(folder, "x86_64-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
+    filter { "architecture:aarch64" }
+      files { path.join(folder, "aarch64-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
   else
     print "Unknown architecture"
   end
@@ -274,7 +290,7 @@ function WriteConfigForMSBuild()
   file:write("<!-- GENERATED FILE -->\n")
   file:write("<Project>\n")
   file:write("  <PropertyGroup>\n")
-  writeProperty("PlatformTarget", target_architecture())
+  writeProperty("PlatformTarget", target_dotnet_architecture())
   writeProperty("TargetFramework", targetframework)
   writeProperty("Configuration", _OPTIONS["configuration"])
   writeBooleanProperty("IsWindows", os.istarget("windows"))
