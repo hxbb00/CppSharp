@@ -238,9 +238,13 @@ function GccVersion()
 end
 
 function UseCxx11ABI()
-  if os.istarget("linux") and premake.checkVersion(GccVersion(), '4.9.0') and _OPTIONS["no-cxx11-abi"] == nil then
+  local gccv = GccVersion()
+  print("GccVersion" .. gccv .. ".")
+  if os.istarget("linux") and premake.checkVersion(gccv, '4.9.0') and _OPTIONS["no-cxx11-abi"] == nil then
+    print("UseCxx11ABI")
     return true
   end
+
   return false
 end
 
@@ -272,7 +276,11 @@ function AddPlatformSpecificFiles(folder, filename)
     filter { "architecture:x86_64" }
       files { path.join(folder, "x86_64-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
     filter { "architecture:aarch64" }
-      files { path.join(folder, "aarch64-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
+      files { path.join(folder, "arm-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
+    filter { "architecture:arm64" }
+      files { path.join(folder, "arm-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
+    filter { "architecture:arm" }
+      files { path.join(folder, "arm-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
   else
     print "Unknown architecture"
   end

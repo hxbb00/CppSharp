@@ -92,9 +92,26 @@ namespace CppSharp
             options.MicrosoftMode = false;
             options.NoBuiltinIncludes = true;
 
-            var headersPath = Platform.IsLinux ? string.Empty :
-                Path.Combine(GetSourceDirectory("build"), "headers", "x86_64-linux-gnu");
-            options.SetupLinux(headersPath);
+            if(Platform.IsLinux)
+            {
+                options.SetupLinux(string.Empty);
+            }
+            else
+            {
+                var x64 = Path.Combine(GetSourceDirectory("build"), "headers", "x86_64-linux-gnu");
+                if(Directory.Exists(x64))
+                {
+                    options.SetupLinux(x64);
+                }
+                else
+                {
+                    var arm64 = Path.Combine(GetSourceDirectory("build"), "headers", "aarch64-linux-gnu");
+                    if(Directory.Exists(arm64))
+                    {
+                        options.SetupLinux(arm64);
+                    }
+                }
+            }
             options.AddDefines("_GLIBCXX_USE_CXX11_ABI=" + (IsGnuCpp11Abi ? "1" : "0"));
         }
 
@@ -152,6 +169,8 @@ namespace CppSharp
 
         public static void Main(string[] args)
         {
+            Console.WriteLine("DBG...");
+            Console.ReadLine();
             if (Platform.IsWindows)
             {
                 Console.WriteLine("Generating the C++/CLI parser bindings for Windows...");
@@ -167,7 +186,7 @@ namespace CppSharp
                 Console.WriteLine();
             }
 
-            var osxHeadersPath = Path.Combine(GetSourceDirectory("build"), @"headers\osx");
+            var osxHeadersPath = Path.Combine(GetSourceDirectory("build"), @"headers/osx");
             if (Directory.Exists(osxHeadersPath) || Platform.IsMacOS)
             {
                 Console.WriteLine("Generating the C# parser bindings for OSX...");
@@ -179,18 +198,38 @@ namespace CppSharp
                 Console.WriteLine();
             }
 
-            var linuxHeadersPath = Path.Combine(GetSourceDirectory("build"), @"headers\x86_64-linux-gnu");
-            if (Directory.Exists(linuxHeadersPath) || Platform.IsLinux)
+            var linuxHeadersPath = Path.Combine(GetSourceDirectory("build"), @"headers/x86_64-linux-gnu");
+            if (Directory.Exists(linuxHeadersPath))
             {
-                Console.WriteLine("Generating the C# parser bindings for Linux...");
-                ConsoleDriver.Run(new ParserGen(GeneratorKind.CSharp, "x86_64-linux-gnu"));
-                Console.WriteLine();
-
-                Console.WriteLine("Generating the C# parser bindings for Linux (GCC C++11 ABI)...");
-                ConsoleDriver.Run(new ParserGen(GeneratorKind.CSharp, "x86_64-linux-gnu",
-                    isGnuCpp11Abi: true));
-                Console.WriteLine();
+                GenLinux("x86_64-linux-gnu");
             }
+            var linuxaarch64HeadersPath = Path.Combine(GetSourceDirectory("build"), @"headers/aarch64-linux-gnu");
+            if (Directory.Exists(linuxaarch64HeadersPath))
+            {
+                GenLinux("arm-linux-gnu");
+            }
+            if (Platform.IsLinux)
+            {
+                if(System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+                {
+                    GenLinux("arm-linux-gnu");
+                }
+                else
+                {
+                    GenLinux("x86_64-linux-gnu");
+                }
+            }
+        }
+
+        static void GenLinux(string triple){
+            Console.WriteLine("Generating the C# parser bindings for Linux...");
+            ConsoleDriver.Run(new ParserGen(GeneratorKind.CSharp, triple));
+            Console.WriteLine();
+
+            Console.WriteLine("Generating the C# parser bindings for Linux (GCC C++11 ABI)...");
+            ConsoleDriver.Run(new ParserGen(GeneratorKind.CSharp, triple,
+                isGnuCpp11Abi: true));
+            Console.WriteLine();
         }
     }
 }

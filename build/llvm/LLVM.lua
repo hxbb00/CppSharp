@@ -10,6 +10,9 @@ local llvm = path.getabsolute(builddir .. "/llvm/llvm-project")
 -- build required by CppSharp.
 if os.istarget("linux") then
 	premake.tools.gcc.libraryDirectories['architecture']['x86_64'] = function(cfg) return {} end
+	premake.tools.gcc.libraryDirectories['architecture']['aarch64'] = function(cfg) return {} end
+	premake.tools.gcc.libraryDirectories['architecture']['arm'] = function(cfg) return {} end
+	premake.tools.gcc.libraryDirectories['architecture']['arm64'] = function(cfg) return {} end
 end
 
 -- If we are inside vagrant then clone and build LLVM outside the shared folder,
@@ -253,7 +256,7 @@ function cmake(gen, conf, builddir, options)
 		.. ' -DLLVM_ENABLE_ZLIB=false'
 		.. ' -DLLVM_INCLUDE_DOCS=false'
 		.. ' -DLLVM_INCLUDE_EXAMPLES=false'
-		.. ' -DLLVM_TARGETS_TO_BUILD="X86"'
+		.. ' -DLLVM_TARGETS_TO_BUILD="ARM;X86"'
 		.. ' -DLLVM_TOOL_BUGPOINT_BUILD=false'
 		.. ' -DLLVM_TOOL_BUGPOINT_PASSES_BUILD=false'
 		.. ' -DLLVM_TOOL_CLANG_TOOLS_EXTRA_BUILD=false'

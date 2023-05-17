@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using CppSharp.AST;
 using CppSharp.Generators;
 using CppSharp.Utils;
@@ -18,6 +22,11 @@ namespace CppSharp.Tests
 
         public static void Main(string[] args)
         {
+            if(args.Length > 0){
+                Console.WriteLine("DBG...");
+                Console.ReadLine();
+            }
+
             ConsoleDriver.Run(new StandardLibTestsGenerator(GeneratorKind.CLI));
         }
     }

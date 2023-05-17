@@ -2,6 +2,7 @@
 set -e
 builddir=$(cd "$(dirname "$0")"; pwd)
 platform=x64
+dotnet_platform=x64
 vs=vs2019
 configuration=Release
 build_only=false
@@ -34,11 +35,11 @@ build()
   fi
 
   if [ $oshost = "linux" ] || [ $oshost = "macosx" ]; then
-    config=$(tr '[:upper:]' '[:lower:]' <<< ${configuration}_$platform) make -C "$builddir/gmake/"
+    config=$(tr '[:upper:]' '[:lower:]' <<< ${configuration}_$dotnet_platform) make -C "$builddir/gmake/"
   fi
 
   find_msbuild
-  $msbuild "$slnpath" -p:Configuration=$configuration -p:Platform=$platform -v:$verbosity -nologo
+  $msbuild "$slnpath" -p:Configuration=$configuration -p:Platform=$dotnet_platform -v:$verbosity -nologo
 
   if [ $ci = true ]; then
     test
@@ -64,24 +65,24 @@ generate()
 restore()
 {
   find_msbuild
-  $msbuild "$slnpath" -p:Configuration=$configuration -p:Platform=$platform -v:$verbosity -t:restore -nologo
+  $msbuild "$slnpath" -p:Configuration=$configuration -p:Platform=$dotnet_platform -v:$verbosity -t:restore -nologo
 }
 
 prepack()
 {
   find_msbuild
-  $msbuild "$slnpath" -t:prepack -p:Configuration=$configuration -p:Platform=$platform -v:$verbosity -nologo
+  $msbuild "$slnpath" -t:prepack -p:Configuration=$configuration -p:Platform=$dotnet_platform -v:$verbosity -nologo
 }
 
 pack()
 {
   find_msbuild
-  $msbuild -t:restore "$rootdir/src/Package/CppSharp.Package.csproj" -p:Configuration=$configuration -p:Platform=$platform
-  $msbuild -t:pack "$rootdir/src/Package/CppSharp.Package.csproj" -p:Configuration=$configuration -p:Platform=$platform -p:PackageOutputPath="$rootdir/artifacts"
+  $msbuild -t:restore "$rootdir/src/Package/CppSharp.Package.csproj" -p:Configuration=$configuration -p:Platform=$dotnet_platform
+  $msbuild -t:pack "$rootdir/src/Package/CppSharp.Package.csproj" -p:Configuration=$configuration -p:Platform=$dotnet_platform -p:PackageOutputPath="$rootdir/artifacts"
 
   if [ $oshost = "windows" -a $platform = "x64" ]; then
-    $msbuild -t:restore "$rootdir/src/Runtime/CppSharp.Runtime.csproj" -p:Configuration=$configuration -p:Platform=$platform
-    $msbuild -t:pack "$rootdir/src/Runtime/CppSharp.Runtime.csproj" -p:Configuration=$configuration -p:Platform=$platform -p:PackageOutputPath="$rootdir/artifacts"
+    $msbuild -t:restore "$rootdir/src/Runtime/CppSharp.Runtime.csproj" -p:Configuration=$configuration -p:Platform=$dotnet_platform
+    $msbuild -t:pack "$rootdir/src/Runtime/CppSharp.Runtime.csproj" -p:Configuration=$configuration -p:Platform=$dotnet_platform -p:PackageOutputPath="$rootdir/artifacts"
   fi
 }
 
@@ -138,6 +139,16 @@ build_llvm()
 package_llvm()
 {
   "$builddir/premake.sh" --file="$builddir/llvm/LLVM.lua" package_llvm --os=$os --arch=$platform --configuration=$configuration
+}
+
+detect_dotnet_arch(){
+  if [ "$platform" = "aarch64" ]; then
+    dotnet_platform=ARM64
+  else
+    dotnet_platform=$platform
+  fi
+
+  echo "dotnet platform $dotnet_platform"
 }
 
 detect_os()
@@ -210,6 +221,8 @@ while [[ $# > 0 ]]; do
   esac
   shift
 done
+
+detect_dotnet_arch
 
 download_premake
 

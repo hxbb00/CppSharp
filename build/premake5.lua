@@ -16,7 +16,7 @@ include "LLVM.lua"
 
 workspace "CppSharp"
   configurations { _OPTIONS["configuration"] }
-  platforms { target_architecture() }
+  platforms { target_dotnet_architecture() }
   dotnetframework (targetframework)
   enabledefaultcompileitems "true"
   characterset "Unicode"

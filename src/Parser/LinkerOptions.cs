@@ -42,11 +42,20 @@ namespace CppSharp.Parser
                     break;
                 case TargetPlatform.Linux:
                 case TargetPlatform.Android:
-                    AddArguments("-L" + (SystemLibraryPath ?? "/usr/lib/x86_64-linux-gnu"));
+                {
+                    if(System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+                    {
+                        AddArguments("-L" + (SystemLibraryPath ?? "/usr/lib/aarch64-linux-gnu"));
+                    }
+                    else
+                    {
+                        AddArguments("-L" + (SystemLibraryPath ?? "/usr/lib/x86_64-linux-gnu"));
+                    }
                     AddArguments("-lc");
                     AddArguments("--shared");
                     AddArguments("-rpath");
                     AddArguments(".");
+                }
                     break;
                 case TargetPlatform.MacOS:
                 case TargetPlatform.iOS:

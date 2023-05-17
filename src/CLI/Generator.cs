@@ -29,7 +29,16 @@ namespace CppSharp
             switch (options.Architecture)
             {
                 case TargetArchitecture.x64:
-                    tripleBuilder.Append("x86_64-");
+                    {
+                        if(System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+                        {
+                            tripleBuilder.Append("arm-");
+                        }
+                        else
+                        {
+                            tripleBuilder.Append("x86_64-");
+                        }
+                    }
                     break;
                 case TargetArchitecture.x86:
                     tripleBuilder.Append("i686-");

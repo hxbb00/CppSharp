@@ -115,6 +115,15 @@ function SetupLLVMLibs()
   filter { "toolset:msc*" }
     links { "version" }
 
+  filter { "architecture:aarch64" }
+    links { "LLVMARMDisassembler", "LLVMARMAsmParser", "LLVMARMCodeGen", "LLVMARMDesc", "LLVMARMInfo" }
+
+  filter { "architecture:arm" }
+    links { "LLVMARMDisassembler", "LLVMARMAsmParser", "LLVMARMCodeGen", "LLVMARMDesc", "LLVMARMInfo" }
+
+  filter { "architecture:arm64" }
+    links { "LLVMARMDisassembler", "LLVMARMAsmParser", "LLVMARMCodeGen", "LLVMARMDesc", "LLVMARMInfo" }
+
   filter {}
 
   if LLVMDirPerConfiguration then

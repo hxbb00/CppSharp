@@ -244,7 +244,16 @@ namespace CppSharp.Parser
 
             var majorVersion = shortVersion.Split('.')[0];
             string[] versions = { longVersion, shortVersion, majorVersion };
-            string[] triples = { "x86_64-linux-gnu", "x86_64-pc-linux-gnu" };
+            List<string> tripleLists = new List<string>();
+            if(System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64){
+                tripleLists.Add("arm-linux-gnu");
+                tripleLists.Add("arm-pc-linux-gnu");
+            }else{
+                tripleLists.Add("x86_64-linux-gnu");
+                tripleLists.Add("x86_64-pc-linux-gnu");
+            }
+
+            string[] triples = tripleLists.ToArray();
             if (compiler == "gcc")
             {
                 foreach (var version in versions)
