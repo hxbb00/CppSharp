@@ -115,7 +115,7 @@ function SetupLLVMLibs()
   filter { "toolset:msc*" }
     links { "version" }
 
-  filter { "architecture:aarch64 or arm" }
+  filter { "architecture:aarch64 or arm64" }
     links 
     { 
       "LLVMAArch64Disassembler",
