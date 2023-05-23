@@ -276,9 +276,9 @@ function AddPlatformSpecificFiles(folder, filename)
     filter { "architecture:x86_64" }
       files { path.join(folder, "x86_64-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
     filter { "architecture:aarch64" }
-      files { path.join(folder, "arm-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
+      files { path.join(folder, "aarch64-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
     filter { "architecture:arm64" }
-      files { path.join(folder, "arm-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
+      files { path.join(folder, "aarch64-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
     filter { "architecture:arm" }
       files { path.join(folder, "arm-linux-gnu" .. (UseCxx11ABI() and "-cxx11abi" or ""), filename) }
   else

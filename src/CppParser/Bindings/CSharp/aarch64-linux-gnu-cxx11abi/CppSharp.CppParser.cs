@@ -6300,9 +6300,10 @@ namespace CppSharp
                 Itanium = 0,
                 Microsoft = 1,
                 ARM = 2,
-                iOS = 3,
-                iOS64 = 4,
-                WebAssembly = 5
+                AArch64 = 3,
+                iOS = 4,
+                iOS64 = 5,
+                WebAssembly = 6
             }
 
             public enum RecordArgABI
@@ -41098,6 +41099,7 @@ namespace CppSharp
             public global::CppSharp.Parser.ParserDiagnostic GetDiagnostics(uint i)
             {
                 var __ret = new global::CppSharp.Parser.ParserDiagnostic.__Internal();
+                global::CppSharp.Parser.ParserDiagnostic.__Internal.ctor(new IntPtr(&__ret));
                 __Internal.GetDiagnostics(new IntPtr(&__ret), __Instance, i);
                 var ____ret = global::CppSharp.Parser.ParserDiagnostic.__CreateInstance(__ret);
                 global::CppSharp.Parser.ParserDiagnostic.__Internal.dtor(new __IntPtr(&__ret));

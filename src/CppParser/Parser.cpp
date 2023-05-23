@@ -26,6 +26,7 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/DataLayout.h>
+#include <llvm/MC/TargetRegistry.h>
 #include <clang/Basic/Builtins.h>
 #include <clang/Basic/Version.h>
 #include <clang/Config/config.h>
@@ -100,6 +101,8 @@ static CppAbi GetClassLayoutAbi(clang::TargetCXXABI::Kind abi)
         return CppAbi::Itanium;
     case clang::TargetCXXABI::GenericARM:
         return CppAbi::ARM;
+    case clang::TargetCXXABI::GenericAArch64:
+        return CppAbi::AArch64;
     case clang::TargetCXXABI::iOS:
         return CppAbi::iOS;
     case clang::TargetCXXABI::AppleARM64:
@@ -231,6 +234,8 @@ ConvertToClangTargetCXXABI(CppSharp::CppParser::AST::CppAbi abi)
         return TargetCXXABI::Microsoft;
     case CppSharp::CppParser::AST::CppAbi::ARM:
         return TargetCXXABI::GenericARM;
+    case CppSharp::CppParser::AST::CppAbi::AArch64:
+        return TargetCXXABI::GenericAArch64;
     case CppSharp::CppParser::AST::CppAbi::iOS:
         return TargetCXXABI::iOS;
     case CppSharp::CppParser::AST::CppAbi::iOS64:
@@ -286,7 +291,16 @@ void Parser::Setup(bool Compile)
     TO->Triple = llvm::Triple::normalize(opts->targetTriple);
 
     if (opts->verbose)
+    {
         printf("Target triple: %s\n", TO->Triple.c_str());
+        llvm::TargetRegistry::iterator itTheTarget = llvm::TargetRegistry::targets().begin();
+        llvm::TargetRegistry::iterator itTheTargetEnd = llvm::TargetRegistry::targets().end();
+        for (; itTheTarget != itTheTargetEnd; itTheTarget++)
+        {
+            const char* szTarget = itTheTarget->getName();
+            printf("TargetRegistry Targets triple: %s\n", szTarget);
+        }
+    }
 
     TargetInfo* TI = TargetInfo::CreateTargetInfo(c->getDiagnostics(), TO);
     if (!TI)

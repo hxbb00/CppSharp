@@ -256,7 +256,7 @@ function cmake(gen, conf, builddir, options)
 		.. ' -DLLVM_ENABLE_ZLIB=false'
 		.. ' -DLLVM_INCLUDE_DOCS=false'
 		.. ' -DLLVM_INCLUDE_EXAMPLES=false'
-		.. ' -DLLVM_TARGETS_TO_BUILD="ARM;X86"'
+		.. ' -DLLVM_TARGETS_TO_BUILD="AArch64;ARM;X86"'
 		.. ' -DLLVM_TOOL_BUGPOINT_BUILD=false'
 		.. ' -DLLVM_TOOL_BUGPOINT_PASSES_BUILD=false'
 		.. ' -DLLVM_TOOL_CLANG_TOOLS_EXTRA_BUILD=false'

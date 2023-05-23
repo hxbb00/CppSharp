@@ -1715,6 +1715,8 @@ namespace CppSharp
                     return AST.CppAbi.Microsoft;
                 case CppAbi.ARM:
                     return AST.CppAbi.ARM;
+                case CppAbi.AArch64:
+                    return AST.CppAbi.AArch64;
                 case CppAbi.iOS:
                     return AST.CppAbi.iOS;
                 case CppAbi.iOS64:

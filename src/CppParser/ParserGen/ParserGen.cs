@@ -206,13 +206,13 @@ namespace CppSharp
             var linuxaarch64HeadersPath = Path.Combine(GetSourceDirectory("build"), @"headers/aarch64-linux-gnu");
             if (Directory.Exists(linuxaarch64HeadersPath))
             {
-                GenLinux("arm-linux-gnu");
+                GenLinux("aarch64-linux-gnu");
             }
             if (Platform.IsLinux)
             {
                 if(System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
                 {
-                    GenLinux("arm-linux-gnu");
+                    GenLinux("aarch64-linux-gnu");
                 }
                 else
                 {

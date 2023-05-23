@@ -52,7 +52,7 @@ Provides APIs for parsing of C/C++ source code into a syntax tree.
 Generates the glue binding code from a syntax tree of the native code.
  
  * Multiple backends: C++/CLI and C# (P/Invoke)
- * Multiple ABIs: Itanium, MS, ARM, iOS
+ * Multiple ABIs: Itanium, MS, ARM, AArch64, iOS
  * Multiple platforms: Windows, OS X and Linux
  * Multiple runtimes: .NET and Mono
  * C++ virtual methods overriding from managed code

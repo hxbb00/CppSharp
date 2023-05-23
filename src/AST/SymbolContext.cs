@@ -8,7 +8,8 @@ namespace CppSharp.AST
         UnknownArch,
 
         x86, // X86: i[3-9]86
-        x86_64 // X86-64: amd64, x86_64
+        x86_64, // X86-64: amd64, x86_64
+        AArch64, // AArch64
     }
 
     /// <summary>

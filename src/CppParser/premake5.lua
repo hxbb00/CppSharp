@@ -23,7 +23,7 @@ project "CppSharp.CppParser"
     filter { "architecture:arm64" }
       defines { "BUILD_AARCH64" }
     filter { "architecture:arm" }
-      defines { "BUILD_AARCH64" }
+      defines { "BUILD_ARM" }
   end
 
   filter "toolset:msc*"

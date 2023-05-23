@@ -32,7 +32,7 @@ namespace CppSharp
                     {
                         if(System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
                         {
-                            tripleBuilder.Append("arm-");
+                            tripleBuilder.Append("aarch64-");
                         }
                         else
                         {
