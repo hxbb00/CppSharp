@@ -246,8 +246,8 @@ namespace CppSharp.Parser
             string[] versions = { longVersion, shortVersion, majorVersion };
             List<string> tripleLists = new List<string>();
             if(System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64){
-                tripleLists.Add("arm-linux-gnu");
-                tripleLists.Add("arm-pc-linux-gnu");
+                tripleLists.Add("aarch64-linux-gnu");
+                tripleLists.Add("aarch64-pc-linux-gnu");
             }else{
                 tripleLists.Add("x86_64-linux-gnu");
                 tripleLists.Add("x86_64-pc-linux-gnu");

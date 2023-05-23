@@ -915,7 +915,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST19BlockCommandCommentD2Ev", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void dtor(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST19BlockCommandComment12getArgumentsEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_BlockCommandComment_getArguments", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetArguments(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST19BlockCommandComment12addArgumentsERNS2_8ArgumentE", CallingConvention = __CallingConvention.Cdecl)]
@@ -1867,7 +1867,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST20InlineCommandCommentD2Ev", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void dtor(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST20InlineCommandComment12getArgumentsEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_CommandComment_getArguments", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetArguments(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST20InlineCommandComment12addArgumentsERNS2_8ArgumentE", CallingConvention = __CallingConvention.Cdecl)]
@@ -2267,7 +2267,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST19HTMLStartTagCommentD2Ev", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void dtor(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST19HTMLStartTagComment13getAttributesEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_HTMLStartTagComment_getAttributes", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetAttributes(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST19HTMLStartTagComment13addAttributesERNS2_9AttributeE", CallingConvention = __CallingConvention.Cdecl)]
@@ -4848,7 +4848,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST26TemplateSpecializationTypeD2Ev", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void dtor(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST26TemplateSpecializationType12getArgumentsEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_TemplateSpecializationType_getArguments", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetArguments(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST26TemplateSpecializationType12addArgumentsERNS1_16TemplateArgumentE", CallingConvention = __CallingConvention.Cdecl)]
@@ -5016,7 +5016,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST35DependentTemplateSpecializationTypeD2Ev", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void dtor(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST35DependentTemplateSpecializationType12getArgumentsEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_DependentTemplateSpecializationType_getArguments", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetArguments(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST35DependentTemplateSpecializationType12addArgumentsERNS1_16TemplateArgumentE", CallingConvention = __CallingConvention.Cdecl)]
@@ -10999,8 +10999,8 @@ namespace CppSharp
                         return;
                     NativeToManagedMap.TryRemove(__Instance, out _);
                     DisposePartial(disposing);
-                    if (callNativeDtor)
-                        __Internal.dtor(__Instance);
+                    //if (callNativeDtor)
+                        //__Internal.dtor(__Instance);
                     if (__ownsNativeInstance)
                         Marshal.FreeHGlobal(__Instance);
                     __Instance = IntPtr.Zero;
@@ -11409,7 +11409,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST11ClassLayoutD2Ev", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void dtor(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST11ClassLayout11getVFTablesEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_ClassLayout_getVFTables", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetVFTables(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST11ClassLayout11addVFTablesERNS1_11VFTableInfoE", CallingConvention = __CallingConvention.Cdecl)]
@@ -11418,7 +11418,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST11ClassLayout13clearVFTablesEv", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void ClearVFTables(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST11ClassLayout9getFieldsEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_ClassLayout_getFields", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetFields(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST11ClassLayout9addFieldsERNS1_11LayoutFieldE", CallingConvention = __CallingConvention.Cdecl)]
@@ -11427,7 +11427,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST11ClassLayout11clearFieldsEv", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void ClearFields(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST11ClassLayout8getBasesEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_ClassLayout_getBases", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetBases(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST11ClassLayout8addBasesERNS1_10LayoutBaseE", CallingConvention = __CallingConvention.Cdecl)]
@@ -11551,7 +11551,7 @@ namespace CppSharp
                     var __ret = new global::CppSharp.Parser.AST.VFTableInfo.__Internal();
                     __Internal.GetVFTables(new IntPtr(&__ret), __Instance, i);
                     var ____ret = global::CppSharp.Parser.AST.VFTableInfo.__CreateInstance(__ret);
-                    global::CppSharp.Parser.AST.VFTableInfo.__Internal.dtor(new __IntPtr(&__ret));
+                    //global::CppSharp.Parser.AST.VFTableInfo.__Internal.dtor(new __IntPtr(&__ret));
                     return ____ret;
                 }
 
@@ -11571,6 +11571,7 @@ namespace CppSharp
                 public global::CppSharp.Parser.AST.LayoutField GetFields(uint i)
                 {
                     var __ret = new global::CppSharp.Parser.AST.LayoutField.__Internal();
+                    global::CppSharp.Parser.AST.LayoutField.__Internal.ctor(new IntPtr(&__ret));
                     __Internal.GetFields(new IntPtr(&__ret), __Instance, i);
                     var ____ret = global::CppSharp.Parser.AST.LayoutField.__CreateInstance(__ret);
                     global::CppSharp.Parser.AST.LayoutField.__Internal.dtor(new __IntPtr(&__ret));
@@ -13428,7 +13429,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST27ClassTemplateSpecializationD2Ev", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void dtor(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST27ClassTemplateSpecialization12getArgumentsEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_ClassTemplateSpecialization_getArguments", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetArguments(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST27ClassTemplateSpecialization12addArgumentsERNS1_16TemplateArgumentE", CallingConvention = __CallingConvention.Cdecl)]
@@ -13915,7 +13916,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST30FunctionTemplateSpecializationD2Ev", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void dtor(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST30FunctionTemplateSpecialization12getArgumentsEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_FunctionTemplateSpecialization_getArguments", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetArguments(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST30FunctionTemplateSpecialization12addArgumentsERNS1_16TemplateArgumentE", CallingConvention = __CallingConvention.Cdecl)]
@@ -14332,7 +14333,7 @@ namespace CppSharp
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST25VarTemplateSpecializationD2Ev", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void dtor(__IntPtr __instance);
 
-                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST25VarTemplateSpecialization12getArgumentsEj", CallingConvention = __CallingConvention.Cdecl)]
+                    [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_VarTemplateSpecialization_getArguments", CallingConvention = __CallingConvention.Cdecl)]
                     internal static extern void GetArguments(__IntPtr @return, __IntPtr __instance, uint i);
 
                     [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser3AST25VarTemplateSpecialization12addArgumentsERNS1_16TemplateArgumentE", CallingConvention = __CallingConvention.Cdecl)]
@@ -40013,7 +40014,7 @@ namespace CppSharp
                 [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser16CppParserOptions31clearSupportedFunctionTemplatesEv", CallingConvention = __CallingConvention.Cdecl)]
                 internal static extern void ClearSupportedFunctionTemplates(__IntPtr __instance);
 
-                [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser16CppParserOptions15getClangVersionB5cxx11Ev", CallingConvention = __CallingConvention.Cdecl)]
+                [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_CppParserOptions_getClangVersion", CallingConvention = __CallingConvention.Cdecl)]
                 internal static extern void GetClangVersion(__IntPtr @return, __IntPtr __instance);
 
                 [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser16CppParserOptions17getArgumentsCountEv", CallingConvention = __CallingConvention.Cdecl)]
@@ -40438,6 +40439,8 @@ namespace CppSharp
                 get
                 {
                     var __ret = new global::Std.BasicString.__Internalc__N_std_N___cxx11_S_basic_string__C___N_std_S_char_traits__C___N_std_S_allocator__C();
+                    global::Std.BasicString.__Internalc__N_std_N___cxx11_S_basic_string__C___N_std_S_char_traits__C___N_std_S_allocator__C
+                    .ctorc__N_std_N___cxx11_S_basic_string__C___N_std_S_char_traits__C___N_std_S_allocator__C(new IntPtr(&__ret));
                     __Internal.GetClangVersion(new IntPtr(&__ret), __Instance);
                     var __basicStringRet0 = global::Std.BasicString<sbyte, global::Std.CharTraits<sbyte>, global::Std.Allocator<sbyte>>.__CreateInstance(new __IntPtr(&__ret));
                     var __retString0 = global::Std.BasicStringExtensions.Data(__basicStringRet0);
@@ -40967,7 +40970,7 @@ namespace CppSharp
                 [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser12ParserResultD2Ev", CallingConvention = __CallingConvention.Cdecl)]
                 internal static extern void dtor(__IntPtr __instance);
 
-                [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser12ParserResult14getDiagnosticsEj", CallingConvention = __CallingConvention.Cdecl)]
+                [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "Patch_ParserResult_getDiagnostics", CallingConvention = __CallingConvention.Cdecl)]
                 internal static extern void GetDiagnostics(__IntPtr @return, __IntPtr __instance, uint i);
 
                 [SuppressUnmanagedCodeSecurity, DllImport("CppSharp.CppParser", EntryPoint = "_ZN8CppSharp9CppParser12ParserResult14addDiagnosticsERNS0_16ParserDiagnosticE", CallingConvention = __CallingConvention.Cdecl)]

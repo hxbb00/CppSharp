@@ -18,6 +18,12 @@ project "CppSharp.CppParser"
 
   if os.istarget("linux") then
     linkgroups "On"
+    filter { "architecture:aarch64" }
+      defines { "BUILD_AARCH64" }
+    filter { "architecture:arm64" }
+      defines { "BUILD_AARCH64" }
+    filter { "architecture:arm" }
+      defines { "BUILD_AARCH64" }
   end
 
   filter "toolset:msc*"

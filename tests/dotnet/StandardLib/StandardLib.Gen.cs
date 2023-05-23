@@ -20,6 +20,12 @@ namespace CppSharp.Tests
             ctx.SetClassAsValueType("IntWrapperValueType");
         }
 
+        public override void Setup(Driver driver){
+            //driver.ParserOptions.Verbose = true;
+            //driver.Options.Verbose = true;
+            base.Setup(driver);
+        }
+
         public static void Main(string[] args)
         {
             if(args.Length > 0){
