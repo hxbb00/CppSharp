@@ -14,7 +14,7 @@ namespace CppSharp.AST
             {
                 case CppAbi.Microsoft:
                     return GatherVTableMethodsMS(@class);
-                case CppAbi.Itanium:
+                default:
                     return GatherVTableMethodsItanium(@class);
             }
 

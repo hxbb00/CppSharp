@@ -741,7 +741,7 @@ void Parser::WalkVTable(const clang::CXXRecordDecl* RD, Class* C)
         }
         break;
     }
-    case TargetCXXABI::GenericItanium:
+    default:
     {
         ItaniumVTableContext VTContext(AST);
 
@@ -749,8 +749,8 @@ void Parser::WalkVTable(const clang::CXXRecordDecl* RD, Class* C)
         C->layout->layout = WalkVTableLayout(VTLayout);
         break;
     }
-    default:
-        llvm_unreachable("Unsupported C++ ABI kind");
+    //default:
+    //    llvm_unreachable("Unsupported C++ ABI kind");
     }
 }
 
