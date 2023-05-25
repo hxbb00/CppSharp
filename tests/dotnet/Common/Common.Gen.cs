@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using CppSharp.AST;
 using CppSharp.Generators;
 using CppSharp.Generators.CSharp;
@@ -81,7 +83,11 @@ namespace CppSharp.Tests
         }
 
         public static void Main(string[] args)
-        {
+        {            
+            if(args.Length > 0){
+                System.Console.WriteLine("DBG...");
+                System.Console.ReadLine();
+            }
             ConsoleDriver.Run(new CommonTestsGenerator(GeneratorKind.CLI));
             ConsoleDriver.Run(new CommonTestsGenerator(GeneratorKind.CSharp));
         }

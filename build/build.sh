@@ -88,7 +88,7 @@ pack()
 
 test()
 {
-  dotnet test {"$bindir/${configuration}_$platform","$gendir"/*}/*.Tests*.dll --nologo
+  dotnet test {"$bindir/${configuration}_$platform","$gendir"/*}/*.Tests*.dll --nologo --blame
 }
 
 clean()

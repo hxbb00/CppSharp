@@ -366,16 +366,18 @@ namespace CppSharp.Types.Std
                 (usePointer ? string.Empty : $"new {typePrinter.IntPtrType}(&")}{
                  ctx.ReturnVarName}{(usePointer ? string.Empty : ")")});");
             string @string = $"{qualifiedBasicString}Extensions.{data.Name}({varBasicString})";
+            var returnType = ctx.ReturnType.Type.Desugar();
+            var cvtString = $"({returnType.Visit(typePrinter)}) (object) ";
             if (usePointer)
             {
-                ctx.Return.Write(@string);
+                ctx.Return.Write($"{cvtString}({@string})");
             }
             else
             {
                 string retString = $"{Generator.GeneratedIdentifier("retString")}{ctx.ParameterIndex}";
                 ctx.Before.WriteLine($"var {retString} = {@string};");
                 ctx.Before.WriteLine($"{varBasicString}.Dispose();");
-                ctx.Return.Write(retString);
+                ctx.Return.Write($"{cvtString}({retString})");
             }
         }
 

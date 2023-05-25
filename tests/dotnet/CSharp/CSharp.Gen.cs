@@ -91,6 +91,11 @@ namespace CppSharp.Tests
 
         public static void Main(string[] args)
         {
+            if (args.Length > 0)
+            {
+                System.Console.WriteLine("DBG...");
+                System.Console.ReadLine();
+            }
             ConsoleDriver.Run(new CSharpTestsGenerator(GeneratorKind.CSharp));
         }
     }
