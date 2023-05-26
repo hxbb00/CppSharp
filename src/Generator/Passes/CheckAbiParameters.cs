@@ -41,13 +41,7 @@ namespace CppSharp.Passes
 
             if (isReturnIndirect)
             {
-                if (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
-                {
-                    //function.ReturnType = new QualifiedType(new BuiltinType(
-                    //    PrimitiveType.IntPtr));
-                    function.ReturnType = new QualifiedType(new PointerType(function.ReturnType));
-                }
-                else
+                if (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture != System.Runtime.InteropServices.Architecture.Arm64)
                 {
                     var indirectParam = new Parameter()
                     {
@@ -61,10 +55,17 @@ namespace CppSharp.Passes
                     function.ReturnType = new QualifiedType(new BuiltinType(
                         PrimitiveType.Void));
                 }
+                else
+                {
+                    Class returnTypeDecl0 = null;
+                    if (function.ReturnType.Type.Desugar().TryGetDeclaration(out returnTypeDecl0) && returnTypeDecl0.Layout.Size <= 16)
+                    {
+                        function.ReturnType = new QualifiedType(new PointerType(function.ReturnType));
+                    }
+                }
             }
 
             var method = function as Method;
-
             if (function.HasThisReturn)
             {
                 // This flag should only be true on methods.
