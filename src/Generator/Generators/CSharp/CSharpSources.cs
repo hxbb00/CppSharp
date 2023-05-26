@@ -2698,7 +2698,7 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
             if (method.IsConstructor){
                 var shouldGenerateClassNativeField = ShouldGenerateClassNativeField(@class);
                 if (@class.IsRefType && shouldGenerateClassNativeField)
-                    WriteLineIndent("this.__debugCallerMemberName = _dbg_member;");
+                    WriteLine("this.__debugCallerMemberName = _dbg_member;");
             }
 
             if (method.IsProxy)
@@ -3124,7 +3124,17 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
                     Class retClass;
                     type.TryGetClass(out retClass);
                     var @class = retClass.OriginalClass ?? retClass;
-                    WriteLine($@"var {Helpers.ReturnIdentifier} = new {TypePrinter.PrintNative(@class)}();");
+                    var clsNative = TypePrinter.PrintNative(@class);
+                    WriteLine($@"var {Helpers.ReturnIdentifier} = new {clsNative}();");
+                    if (@class.HasNonTrivialDefaultConstructor)
+                    {
+                        var defaultCtorMethod = @class.Methods.FirstOrDefault(method_0 => method_0.IsDefaultConstructor);
+
+                        var nativeCtorFunction = GetFunctionNativeIdentifier(defaultCtorMethod);
+
+                        var nameCtor = string.Format("new IntPtr(&{0})", Helpers.ReturnIdentifier);
+                        WriteLine($@"{clsNative}.{nativeCtorFunction}({nameCtor});");
+                    }
                 }
                 else
                 {
