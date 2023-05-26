@@ -123,7 +123,16 @@ namespace CppSharp.Passes
             }
 
             if (!NeedsSymbol(function))
+            {
+                if (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
+                    == System.Runtime.InteropServices.Architecture.Arm64 && function.IsReturnIndirect)
+                {
+                    Module module0 = function.TranslationUnit.Module;
+                    return function.Visit(GetSymbolsCodeGenerator(module0));
+                }
+
                 return false;
+            }
 
             Module module = function.TranslationUnit.Module;
             return function.Visit(GetSymbolsCodeGenerator(module));
@@ -322,8 +331,7 @@ namespace CppSharp.Passes
         private static string GetOutputFile(string library)
         {
             return Path.GetFileName($@"{(Platform.IsWindows ?
-                string.Empty : "lib")}{library}.{
-                (Platform.IsMacOS ? "dylib" : Platform.IsWindows ? "dll" : "so")}");
+                string.Empty : "lib")}{library}.{(Platform.IsMacOS ? "dylib" : Platform.IsWindows ? "dll" : "so")}");
         }
 
         private int remainingCompilationTasks;

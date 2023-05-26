@@ -44,6 +44,11 @@ namespace CppSharp.Passes
 
         public override bool VisitMethodDecl(Method method)
         {
+            if (method.IsReturnIndirect)
+            {
+                return VisitReturnIndirectMethodDecl(method);
+            }
+
             if (method.IsDestructor &&
                 (!((Class)method.Namespace).HasNonTrivialDestructor ||
                  method.Access == AccessSpecifier.Private))
@@ -94,7 +99,61 @@ namespace CppSharp.Passes
 
         public override bool VisitFunctionDecl(Function function)
         {
+            if (function.IsReturnIndirect)
+            {
+                return VisitReturnIndirectMethodDecl(function);
+            }
+
             TakeFunctionAddress(function, GetWrapper(function));
+            return true;
+        }
+
+        bool VisitReturnIndirectMethodDecl(Function function)
+        {
+            string instance = Helpers.InstanceField;
+            string @namespace = function.Namespace.Visit(cppTypePrinter);
+            var wrapper = $"_IndirectReturn_{GetWrapper(function)}";
+            if (Options.CheckSymbols)
+            {
+                function.Mangled = wrapper;
+                function.CallingConvention = CallingConvention.C;
+            }
+            TypePrinterResult returnType = function.OriginalReturnType.Visit(cppTypePrinter);
+            Stack<string> parentsOpen = GenerateNamespace(function);
+
+            int i = 0;
+            foreach (var param in function.Parameters.Where(
+                p => string.IsNullOrEmpty(p.OriginalName)))
+                param.Name = "_" + i++;
+            var signature = string.Join(", ", function.Parameters.Select(
+                    p => cppTypePrinter.VisitParameter(p)));
+
+            var paraNames = string.Join(", ", function.Parameters.Select(p => p.Name));
+
+            Write($"extern \"C\" {GetExporting()} void {wrapper}({returnType}& __ret");
+            if (!string.IsNullOrEmpty(@namespace))
+            {
+                Write($", {@namespace}* {instance}");
+            }
+            if (!string.IsNullOrEmpty(signature))
+            {
+                Write($", {signature}");
+            }
+            Write($"){{ __ret = ");
+            if (function.OperatorKind == CXXOperatorKind.Conversion 
+                || function.OperatorKind == CXXOperatorKind.ExplicitConversion)
+            {
+                WriteLine($"({returnType})(*{instance}); }} ");
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(@namespace))
+                {
+                    Write($"{instance}->");
+                }
+                WriteLine($"{function.OriginalName}({paraNames}); }} ");
+            }
+
             return true;
         }
 
@@ -162,8 +221,7 @@ namespace CppSharp.Passes
             bool isAbstract = ((Class)method.Namespace).IsAbstract;
             if (method.Access == AccessSpecifier.Protected || isAbstract)
             {
-                Write($@"{{ ::new ({Helpers.InstanceField}) {
-                    wrapper}{method.Namespace.Name}({@params}); }}");
+                Write($@"{{ ::new ({Helpers.InstanceField}) {wrapper}{method.Namespace.Name}({@params}); }}");
                 WriteLine(!isAbstract ? " };" : string.Empty);
             }
             else
@@ -210,12 +268,10 @@ namespace CppSharp.Passes
             {
                 string @class = wrapper + method.Namespace.Name;
                 WriteLine($"() {{ this->~{@class}(); }} }};");
-                Write($@"extern ""C"" {GetExporting()}void {wrapper}({
-                    @class}* {instance}) {{ {instance}->{wrapper}Protected");
+                Write($@"extern ""C"" {GetExporting()}void {wrapper}({@class}* {instance}) {{ {instance}->{wrapper}Protected");
             }
             else
-                Write($@"({$"{@namespace}*{instance}"}) {{ {
-                    instance}->~{method.Namespace.Name}");
+                Write($@"({$"{@namespace}*{instance}"}) {{ {instance}->~{method.Namespace.Name}");
             WriteLine("(); }");
         }
 
@@ -238,8 +294,7 @@ namespace CppSharp.Passes
 
             var method = function as Method;
             if (function.Namespace.Access == AccessSpecifier.Protected)
-                Write($@"class {wrapper}{function.Namespace.Name} : public {
-                    function.Namespace.Namespace.Visit(cppTypePrinter)} {{ ");
+                Write($@"class {wrapper}{function.Namespace.Name} : public {function.Namespace.Namespace.Visit(cppTypePrinter)} {{ ");
 
             string variable = $@"({(method?.IsStatic == false ?
                 (@namespace + "::") : string.Empty)}*{wrapper}){signature}";

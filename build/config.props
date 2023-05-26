@@ -1,7 +1,7 @@
 <!-- GENERATED FILE -->
 <Project>
   <PropertyGroup>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Configuration>Release</Configuration>
     <IsWindows>true</IsWindows>

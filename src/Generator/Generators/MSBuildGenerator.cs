@@ -26,7 +26,7 @@ namespace CppSharp.Generators
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <PlatformTarget>{(Context.TargetInfo.PointerWidth == 64 ? "x64" : "x86")}</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>{Options.OutputDir}</OutputPath>
     <DocumentationFile>{module.LibraryName}.xml</DocumentationFile>
     <Configuration>Release</Configuration>
