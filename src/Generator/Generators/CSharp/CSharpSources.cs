@@ -2382,9 +2382,12 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
         private void GenerateNativeConstructor(Class @class)
         {
             var shouldGenerateClassNativeField = ShouldGenerateClassNativeField(@class);
-            if (@class.IsRefType && shouldGenerateClassNativeField)
+            if (@class.IsRefType)
             {
                 WriteLine("private string {0};", "__debugCallerMemberName");
+            }
+            if (@class.IsRefType && shouldGenerateClassNativeField)
+            {
                 PushBlock(BlockKind.Field);
                 WriteLine("internal protected bool {0};", Helpers.OwnsNativeInstanceIdentifier);
                 PopBlock(NewLineKind.BeforeNextBlock);
@@ -2696,9 +2699,10 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
 
             WriteOpenBraceAndIndent();
             if (method.IsConstructor){
-                var shouldGenerateClassNativeField = ShouldGenerateClassNativeField(@class);
-                if (@class.IsRefType && shouldGenerateClassNativeField)
+                if (@class.IsRefType)
+                {
                     WriteLine("this.__debugCallerMemberName = _dbg_member;");
+                }
             }
 
             if (method.IsProxy)
