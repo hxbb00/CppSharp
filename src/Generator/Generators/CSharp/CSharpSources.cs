@@ -3133,11 +3133,12 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
                     if (@class.HasNonTrivialDefaultConstructor)
                     {
                         var defaultCtorMethod = @class.Methods.FirstOrDefault(method_0 => method_0.IsDefaultConstructor);
-
-                        var nativeCtorFunction = GetFunctionNativeIdentifier(defaultCtorMethod);
-
-                        var nameCtor = string.Format("new IntPtr(&{0})", Helpers.ReturnIdentifier);
-                        WriteLine($@"{clsNative}.{nativeCtorFunction}({nameCtor});");
+                        if (defaultCtorMethod.Parameters.Count == 0)
+                        {
+                            var nativeCtorFunction = GetFunctionNativeIdentifier(defaultCtorMethod);
+                            var nameCtor = string.Format("new IntPtr(&{0})", Helpers.ReturnIdentifier);
+                            WriteLine($@"{clsNative}.{nativeCtorFunction}({nameCtor});");
+                        }
                     }
                 }
                 else
