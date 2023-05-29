@@ -44,7 +44,8 @@ namespace CppSharp.Passes
 
         public override bool VisitMethodDecl(Method method)
         {
-            if (method.IsReturnIndirect)
+            if (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
+                    == System.Runtime.InteropServices.Architecture.Arm64 && method.IsReturnIndirect)
             {
                 return VisitReturnIndirectMethodDecl(method);
             }
@@ -99,7 +100,8 @@ namespace CppSharp.Passes
 
         public override bool VisitFunctionDecl(Function function)
         {
-            if (function.IsReturnIndirect)
+            if (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
+                    == System.Runtime.InteropServices.Architecture.Arm64 && function.IsReturnIndirect)
             {
                 return VisitReturnIndirectMethodDecl(function);
             }
