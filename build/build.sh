@@ -109,7 +109,7 @@ download_premake()
     premake_filename=$premake_filename.exe
   fi
   premake_path=$premake_dir/$premake_filename
-
+  echo "premake_local_path... $premake_path"
   if ! [ -f "$premake_path" ]; then
     premake_url=https://github.com/hxbb00/premake-core/releases/download/latest/premake-$oshost-$platform.zip  
     echo "Downloading and unpacking Premake... $premake_url"
