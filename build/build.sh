@@ -78,11 +78,11 @@ pack()
 {
   find_msbuild
   $msbuild -t:restore "$rootdir/src/Package/CppSharp.Package.csproj" -p:Configuration=$configuration -p:Platform=$dotnet_platform
-  $msbuild -t:pack "$rootdir/src/Package/CppSharp.Package.csproj" -p:Configuration=$configuration -p:Platform=$dotnet_platform -p:PackageOutputPath="$rootdir/artifacts"
+  $msbuild -t:pack "$rootdir/src/Package/CppSharp.Package.csproj" -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg -p:Configuration=$configuration -p:Platform=$dotnet_platform -p:PackageOutputPath="$rootdir/artifacts"
 
   if [ $oshost = "windows" -a $platform = "x64" ]; then
     $msbuild -t:restore "$rootdir/src/Runtime/CppSharp.Runtime.csproj" -p:Configuration=$configuration -p:Platform=$dotnet_platform
-    $msbuild -t:pack "$rootdir/src/Runtime/CppSharp.Runtime.csproj" -p:Configuration=$configuration -p:Platform=$dotnet_platform -p:PackageOutputPath="$rootdir/artifacts"
+    $msbuild -t:pack "$rootdir/src/Runtime/CppSharp.Runtime.csproj" -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg -p:Configuration=$configuration -p:Platform=$dotnet_platform -p:PackageOutputPath="$rootdir/artifacts"
   fi
 }
 
