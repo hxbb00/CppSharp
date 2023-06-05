@@ -142,7 +142,7 @@ namespace CppSharp.Passes
                 Write($", {signature}");
             }
             Write($"){{ __ret = ");
-            if (function.OperatorKind == CXXOperatorKind.Conversion 
+            if (function.OperatorKind == CXXOperatorKind.Conversion
                 || function.OperatorKind == CXXOperatorKind.ExplicitConversion)
             {
                 WriteLine($"({returnType})(*{instance}); }} ");
@@ -196,11 +196,12 @@ namespace CppSharp.Passes
                 if (function.IsOperator)
                     nameBuilder.Append(function.OperatorKind);
 
-                if (function.IsConstructor)
+                if (method.IsConstructor)
                     nameBuilder.Append("__ctor");
 
-                if (function.IsDestructor)
+                if (method.IsDestructor)
                     nameBuilder.Append("__dtor");
+
                 return nameBuilder.ToString();
             }
             return $"_{functionCount++}";
