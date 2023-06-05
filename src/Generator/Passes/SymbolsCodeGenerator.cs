@@ -195,6 +195,12 @@ namespace CppSharp.Passes
                     $"{@class}_F_", $"{@class}_").TrimUnderscores();
                 if (function.IsOperator)
                     nameBuilder.Append(function.OperatorKind);
+
+                if (function.IsConstructor)
+                    nameBuilder.Append("__ctor");
+
+                if (function.IsDestructor)
+                    nameBuilder.Append("__dtor");
                 return nameBuilder.ToString();
             }
             return $"_{functionCount++}";
