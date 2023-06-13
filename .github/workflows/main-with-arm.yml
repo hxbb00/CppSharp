@@ -54,7 +54,7 @@ jobs:
             echo "Setup dotnet 3.1.x"
             wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
             sudo chmod +x ./dotnet-install.sh
-            ./dotnet-install.sh --version 3.1.32
+            ./dotnet-install.sh --version 3.1.x
             dotnet --version
             dotnet tool uninstall --global nbgv
             dotnet tool install --global nbgv --version 3.5.119
