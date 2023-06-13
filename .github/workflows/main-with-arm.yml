@@ -11,7 +11,7 @@ jobs:
           - arch: aarch64
             distro: ubuntu20.04
 
-    runs-on: ${{ matrix.distro }}
+    runs-on: ubuntu20.04
 
     name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
 
