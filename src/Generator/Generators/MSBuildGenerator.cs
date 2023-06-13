@@ -35,6 +35,7 @@ namespace CppSharp.Generators
     <EnableDefaultItems>false</EnableDefaultItems>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <DefineConstants>{constDefines}</DefineConstants>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
   </PropertyGroup>
   <ItemGroup>
     {string.Join(Environment.NewLine, module.CodeFiles.Select(c =>
