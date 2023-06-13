@@ -3017,7 +3017,7 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
                 // todo: throwing an exception at runtime is ugly, we should seal the class instead
                 var typeFullName = TypePrinter.VisitClassDecl(@class).Type.Replace("global::", string.Empty);
                 WriteLine($@"if (GetType().FullName != ""{typeFullName}"")");
-                WriteLineIndent($@"throw new Exception(""{typeFullName}: Can't inherit from classes with disabled NativeToManaged map"");");
+                WriteLineIndent($@"throw new System.Exception(""{typeFullName}: Can't inherit from classes with disabled NativeToManaged map"");");
             }
 
             var @internal = TypePrinter.PrintNative(
