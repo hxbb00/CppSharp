@@ -62,15 +62,15 @@ jobs:
             dotnet tool install --global nbgv --version 3.5.119
             nbgv cloud --all-vars
             echo "Setup"
-            ./build/build.sh clean
+            ./build/build.sh clean -platform aarch64
             ./build/build.sh generate -platform aarch64
-            ./build/build.sh download_llvm -platform $PLATFORM
+            ./build/build.sh download_llvm -platform aarch64
             echo "restore"
             ./build/build.sh restore -platform aarch64
             echo "Build"
             ./build/build.sh -build_only -platform aarch64
             echo "Pack"
-            ./build/build.sh prepack -platform $PLATFORM
+            ./build/build.sh prepack -platform aarch64
             ls -al "${PWD}"
 
       - name: Show the artifacts
