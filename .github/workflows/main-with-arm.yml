@@ -1,0 +1,66 @@
+name: CI-with-arm
+
+on:
+    workflow_dispatch:
+
+jobs:
+  build-arm:
+    strategy:
+      matrix:
+        include:
+          - arch: aarch64
+            distro: ubuntu20.04
+
+    runs-on: ${{ matrix.distro }}
+
+    name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: uraimo/run-on-arch-action@v2
+        name: Build artifact
+        id: build
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ matrix.distro }}
+
+          # Not required, but speeds up builds
+          githubToken: ${{ github.token }}
+
+          # Create an artifacts directory
+          setup: |
+            mkdir -p "${PWD}/artifacts"
+
+          # Mount the artifacts directory as /artifacts in the container
+          dockerRunArgs: |
+            --volume "${PWD}/artifacts:/artifacts"
+          
+          # Pass some environment variables to the container
+          env: | # YAML, but pipe character is necessary
+            CC: gcc
+            CXX: g++
+            PLATFORM: ${{ matrix.arch }}
+            ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+          install: |
+            apt-get update -q -y
+            apt-get install -q -y --no-install-recommends cmake make build-essential gdb git apt-utils curl unzip ca-certificates
+            apt-get install -q -y --no-install-recommends ninja-build python3-dev
+
+          run: |
+            pwd
+            ls -al "${PWD}"
+            echo "Setup dotnet 3.1.x"
+            wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+            sudo chmod +x ./dotnet-install.sh
+            ./dotnet-install.sh --version 3.1.32
+            dotnet --version
+            dotnet tool uninstall --global nbgv
+            dotnet tool install --global nbgv --version 3.5.119
+            nbgv cloud --all-vars
+
+      - name: Show the artifacts
+        run: |
+          pwd
+          ls -al "${PWD}/artifacts"
