@@ -56,6 +56,8 @@ jobs:
             wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh -O dotnet-install.sh
             sudo chmod +x ./dotnet-install.sh
             ./dotnet-install.sh --version 3.1.426
+            export DOTNET_ROOT=$HOME/.dotnet
+            export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
             dotnet --version
             dotnet tool uninstall --global nbgv
             dotnet tool install --global nbgv --version 3.5.119
