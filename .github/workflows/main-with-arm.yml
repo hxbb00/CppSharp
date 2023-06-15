@@ -17,6 +17,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - uses: uraimo/run-on-arch-action@v2
         name: Build artifact
@@ -34,7 +36,7 @@ jobs:
 
           # Mount the artifacts directory as /artifacts in the container
           dockerRunArgs: |
-            --volume "${PWD}/artifacts:/artifacts"
+            --volume "/home/runner/work:/home/runner/work"
           
           # Pass some environment variables to the container
           env: | # YAML, but pipe character is necessary
@@ -45,23 +47,166 @@ jobs:
 
           install: |
             apt-get update -q -y
-            apt-get install -q -y --no-install-recommends cmake make build-essential gdb git apt-utils curl unzip ca-certificates wget
-            apt-get install -q -y --no-install-recommends ninja-build python3-dev
+            apt-get install -q -y --no-install-recommends cmake make build-essential gdb git apt-utils curl unzip ca-certificates
+            apt-get install -q -y --no-install-recommends ninja-build python3-dev wget sudo
 
           run: |
             uname -a
             pwd
             ls -al "${PWD}"
             echo "Setup dotnet 3.1.x"
-            wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+            wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh -O dotnet-install.sh
             sudo chmod +x ./dotnet-install.sh
-            ./dotnet-install.sh --version 3.1.x
+            ./dotnet-install.sh --version 3.1.426
+            export DOTNET_ROOT=$HOME/.dotnet
+            export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
             dotnet --version
-            dotnet tool uninstall --global nbgv
             dotnet tool install --global nbgv --version 3.5.119
             nbgv cloud --all-vars
+            echo "Setup"
+            ./build/build.sh clean -platform aarch64
+            ./build/build.sh generate -platform aarch64
+            ./build/build.sh download_llvm -platform aarch64
+            echo "restore"
+            ./build/build.sh restore -platform aarch64
+            echo "Build"
+            ./build/build.sh -build_only -platform aarch64
+            echo "Pack"
+            ./build/build.sh prepack -platform aarch64
+            ls -al "${PWD}"
 
       - name: Show the artifacts
         run: |
           pwd
           ls -al "${PWD}/artifacts"
+          
+      - uses: actions/upload-artifact@v2
+        with:
+          name: intermediate
+          path: |
+            artifacts
+            include/**/*.h
+
+  build-x86:
+    strategy:
+      fail-fast: false
+      matrix:
+        dotnet-version: [ '3.1.x' ]
+        config:
+          - { os: ubuntu-20.04, platform: x64, cxx: g++-10, cc: gcc-10 }
+          - { os: windows-2019, platform: x64, vs: msvc }
+
+    runs-on: ${{ matrix.config.os }}
+
+    env:
+      CC: ${{ matrix.config.cc }}
+      CXX: ${{ matrix.config.cxx }}
+      PLATFORM: ${{ matrix.config.platform }}
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      # You can test your matrix by printing the current dotnet version
+      - name: Display dotnet version
+        run: dotnet --version
+
+      - name: Uninstall nbgv
+        run: |
+          dotnet tool uninstall --global nbgv
+
+      - name: Install nbgv
+        run: |
+          dotnet tool install --global nbgv --version 3.5.119
+
+      - name: Set version
+        run: nbgv cloud --all-vars
+
+      - name: Environment
+        if: matrix.config.vs
+        shell: bash
+        run: echo "/c/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/MSBuild/Current/Bin" >> $GITHUB_PATH
+
+      - name: Setup
+        shell: bash
+        run: |
+          build/build.sh generate -platform $PLATFORM
+          build/build.sh download_llvm -platform $PLATFORM
+
+      - name: Restore
+        shell: bash
+        run: build/build.sh restore -platform $PLATFORM
+
+      - name: Build
+        shell: bash
+        run: build/build.sh -platform $PLATFORM -build_only
+
+      # - name: Test
+      #   shell: bash
+      #   run: build/test.sh -platform $PLATFORM
+
+      - name: Pack
+        shell: bash
+        run: build/build.sh prepack -platform $PLATFORM
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: intermediate
+          path: |
+            artifacts
+            include/**/*.h
+
+  create_package:
+    runs-on: windows-2019
+    needs: [build-x86, build-arm]
+
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+
+      - name: Set version
+        run: nbgv cloud --all-vars
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: intermediate
+
+      - name: Setup
+        shell: bash
+        run: build/build.sh generate_config
+
+      - name: Create package
+        shell: bash
+        run: build/build.sh pack
+
+      - name: Upload package
+        uses: actions/upload-artifact@v2
+        with:
+          name: CppSharp.nupkg
+          path: |
+            artifacts/*.nupkg
+
+      - name: Upload package to GitHub Packages
+        run: |
+          cd artifacts
+          dotnet nuget push "*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/hxbb00/index.json" --skip-duplicate
+
+      - name: Publish package to nuget.org
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd artifacts
+          dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+
