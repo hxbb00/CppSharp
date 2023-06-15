@@ -10,7 +10,7 @@ newoption {
    allowed = {
       { "x86",  "x86 32-bits" },
       { "x64",  "x64 64-bits" },
-      { "aarch64",  "ARM 64-bits" },
+      { "aarch64",  "arm 64-bits" },
    }
 }
 
@@ -99,7 +99,7 @@ function target_dotnet_architecture()
 	elseif arch_v == "x64" then
 		return "x64"
 	elseif arch_v == "aarch64" then
-		return "ARM64"
+		return "arm64"
 	else
 		error("Cannot map to dotnet architecture")
 	end

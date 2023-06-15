@@ -143,7 +143,7 @@ package_llvm()
 
 detect_dotnet_arch(){
   if [ "$platform" = "aarch64" ]; then
-    dotnet_platform=ARM64
+    dotnet_platform=arm64
   else
     dotnet_platform=$platform
   fi

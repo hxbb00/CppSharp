@@ -9,8 +9,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: ARM64, platform: aarch64, cxx: g++-9, cc: gcc-9 }
-          - { os: ARM64, platform: aarch64, cxx: g++-10, cc: gcc-10 }
+          - { os: arm64, platform: aarch64, cxx: g++-9, cc: gcc-9 }
+          - { os: arm64, platform: aarch64, cxx: g++-10, cc: gcc-10 }
 
     runs-on: ${{ matrix.config.os }}
 
