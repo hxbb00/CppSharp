@@ -266,9 +266,9 @@ namespace CppSharp.Generators.CSharp
                 .Any();
 
             using (PushWriteBlock(BlockKind.Functions, $"public unsafe partial {(isStruct ? "struct" : "class")} {parentName}", NewLineKind.BeforeNextBlock))
-            { 
+            {
                 using (PushWriteBlock(BlockKind.InternalsClass, GetClassInternalHead(new Class { Name = parentName }), NewLineKind.BeforeNextBlock))
-                { 
+                {
                     // Generate all the internal function declarations.
                     foreach (var function in context.Functions)
                     {
@@ -311,7 +311,7 @@ namespace CppSharp.Generators.CSharp
                 template.Name);
 
             using (PushWriteBlock(BlockKind.Namespace, namespaceName, NewLineKind.BeforeNextBlock))
-            { 
+            {
                 var generated = GetGeneratedClasses(template, specializations);
 
                 foreach (var nestedTemplate in template.Classes.Where(
@@ -1625,19 +1625,27 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
             var variableType = variable.Type.Visit(TypePrinter);
             TypePrinter.PopMarshalKind();
 
-            var signature = $"public static {variableType} {variable.Name}";
+            bool hasInitializer = variable.Initializer != null && !string.IsNullOrWhiteSpace(variable.Initializer.String);
 
-            if (variable.Initializer != null && !string.IsNullOrWhiteSpace(variable.Initializer.String))
-                GeneratePropertyGetterForVariableWithInitializer(variable, signature);
+            if (hasInitializer && variable.QualifiedType.Qualifiers.IsConst &&
+                (variable.Type.Desugar() is BuiltinType || variableType.ToString() == "string"))
+                Write($"public const {variableType} {variable.Name} = {variable.Initializer.String};");
             else
             {
-                using (WriteBlock(signature))
-                {
-                    GeneratePropertyGetter(variable, @class);
+                var signature = $"public static {variableType} {variable.Name}";
 
-                    if (!variable.QualifiedType.Qualifiers.IsConst &&
-                        !(variable.Type.Desugar() is ArrayType))
-                        GeneratePropertySetter(variable, @class);
+                if (hasInitializer)
+                    GeneratePropertyGetterForVariableWithInitializer(variable, signature);
+                else
+                {
+                    using (WriteBlock(signature))
+                    {
+                        GeneratePropertyGetter(variable, @class);
+
+                        if (!variable.QualifiedType.Qualifiers.IsConst &&
+                            !(variable.Type.Desugar() is ArrayType))
+                            GeneratePropertySetter(variable, @class);
+                    }
                 }
             }
 
@@ -1790,7 +1798,7 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
                     return __vtables;
                 }}
 
-                set {{    
+                set {{
                     __vtables = value;
                 }}", trimIndentation: true);
             }
@@ -2306,13 +2314,13 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
                     // Normally, calling the native dtor should be controlled by whether or not we
                     // we own the underlying instance. (i.e. Helpers.OwnsNativeInstanceIdentifier).
                     // However, there are 2 situations when the caller needs to have direct control
-                    // 
+                    //
                     // 1. When we have a virtual dtor on the native side we detour the vtable entry
                     // even when we don't own the underlying native instance. I think we do this
                     // so that the managed side can null out the __Instance pointer and remove the
                     // instance from the NativeToManagedMap. Of course, this is somewhat half-hearted
                     // since we can't/don't do this when there's no virtual dtor available to detour.
-                    // Anyway, we must be able to call the native dtor in this case even if we don't 
+                    // Anyway, we must be able to call the native dtor in this case even if we don't
                     /// own the underlying native instance.
                     //
                     // 2. When we we pass a disposable object to a function "by value" then the callee
@@ -2323,7 +2331,7 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
                     //   ....
                     // compiler generates call to f.dtor() at the end of function
                     // }
-                    // 
+                    //
                     // IDisposable.Dispose() and Object.Finalize() set callNativeDtor = Helpers.OwnsNativeInstanceIdentifier
                     WriteLine("if (callNativeDtor)");
                     if (@class.IsDependent || dtor.IsVirtual)
@@ -2346,7 +2354,7 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
             }
 
             // If we have any fields holding references to unmanaged memory allocated here, free the
-            // referenced memory. Don't rely on testing if the field's IntPtr is IntPtr.Zero since 
+            // referenced memory. Don't rely on testing if the field's IntPtr is IntPtr.Zero since
             // unmanaged memory isn't always initialized and/or a reference may be owned by the
             // native side.
             //
@@ -2567,7 +2575,7 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
             using (WriteBlock($"public static void* __CopyValue({@internal} native)"))
             {
                 var copyCtorMethod = @class.Methods.FirstOrDefault(method => method.IsCopyConstructor);
-                
+
                 if (@class.HasNonTrivialCopyConstructor && copyCtorMethod != null && copyCtorMethod.IsGenerated)
                 {
                     // Allocate memory for a new native object and call the ctor.
@@ -2889,7 +2897,7 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
         private void GenerateGetHashCode(Class @class)
         {
             using (WriteBlock("public override int GetHashCode()"))
-            { 
+            {
                 if (!@class.IsRefType)
                     WriteLine($"return {Helpers.InstanceIdentifier}.GetHashCode();");
                 else
@@ -3040,7 +3048,7 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
                     // Copy any string references owned by the source to the new instance so we
                     // don't have to ref count them.
                     // If there is no property or no setter then this instance can never own the native
-                    // memory. Worry about the case where there's only a setter (write-only) when we 
+                    // memory. Worry about the case where there's only a setter (write-only) when we
                     // understand the use case and how it can occur.
                     foreach (var prop in @class.GetConstCharFieldProperties())
                     {
