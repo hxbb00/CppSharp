@@ -982,7 +982,7 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
             string ptr = Generator.GeneratedIdentifier("ptr");
             if (arrayType != null)
             {
-                if (arrayType.Type.IsPrimitiveType(PrimitiveType.Char) && arrayType.SizeType != ArrayType.ArraySize.Constant)
+                if (Context.Options.MarshalConstCharArrayAsString && arrayType.Type.IsPrimitiveType(PrimitiveType.Char) && arrayType.SizeType != ArrayType.ArraySize.Constant)
                     WriteLine($"var {ptr} = {location};");
                 else
                     WriteLine($"var {ptr} = ({arrayType.Type.Visit(TypePrinter)}*){location};");
@@ -2824,7 +2824,7 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
 
         private string OverloadParamNameWithDefValue(Parameter p, ref int index)
         {
-            return p.Type.IsPointerToPrimitiveType() && p.Usage == ParameterUsage.InOut && p.HasDefaultValue
+            return (p.Type.IsPointerToPrimitiveType() || p.Type.IsPointerToEnum()) && p.Usage == ParameterUsage.InOut && p.HasDefaultValue
                 ? "ref param" + index++
                 : ExpressionPrinter.VisitParameter(p);
         }
@@ -2843,13 +2843,15 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
             for (int i = 0, j = 0; i < function.Parameters.Count; i++)
             {
                 var parameter = function.Parameters[i];
-                PrimitiveType primitiveType;
+                PrimitiveType primitiveType = PrimitiveType.Null;
+                Enumeration enumeration = null;
                 if (parameter.Kind == ParameterKind.Regular && parameter.Ignore &&
-                    parameter.Type.IsPointerToPrimitiveType(out primitiveType) &&
+                        (parameter.Type.IsPointerToPrimitiveType(out primitiveType) ||
+                        parameter.Type.IsPointerToEnum(out enumeration)) &&
                     parameter.Usage == ParameterUsage.InOut && parameter.HasDefaultValue)
                 {
                     var pointeeType = ((PointerType)parameter.Type).Pointee.ToString();
-                    WriteLine($@"{pointeeType} param{j++} = {(primitiveType == PrimitiveType.Bool ? "false" : "0")};");
+                    WriteLine($@"{pointeeType} param{j++} = {(primitiveType == PrimitiveType.Bool ? "false" : $"({pointeeType})0")};");
                 }
             }
 

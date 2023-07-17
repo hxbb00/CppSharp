@@ -675,6 +675,7 @@ namespace CppSharp
                 unsigned int position;
                 bool isPackExpansion;
                 bool isExpandedParameterPack;
+                QualifiedType type;
             };
 
             class ClassTemplateSpecialization;
