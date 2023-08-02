@@ -2289,8 +2289,8 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
 
             if (@class.IsRefType)
             {
-                var typeFullName = TypePrinter.VisitClassDecl(@class).Type;
-                WriteLine($"System.Diagnostics.Debug.WriteLine($\"Dispose {typeFullName} by: {{this.__debugCallerMemberName}}\");");
+                //var typeFullName = TypePrinter.VisitClassDecl(@class).Type;
+                //WriteLine($"System.Diagnostics.Debug.WriteLine($\"Dispose {typeFullName} by: {{this.__debugCallerMemberName}}\");");
                 WriteLine("if ({0} == IntPtr.Zero)", Helpers.InstanceIdentifier);
                 WriteLineIndent("return;");
 

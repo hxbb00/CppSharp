@@ -175,15 +175,22 @@ namespace CppSharp.Passes
                         TemplateSpecializationKind.ExplicitSpecialization;
                 declarationContext = declarationContext.Namespace;
             } while (!isInImplicitSpecialization && declarationContext != null);
-
-            return function.IsGenerated && !function.IsDeleted &&
+            NativeLibrary libraryFind = null;
+            var needs = function.IsGenerated && !function.IsDeleted &&
                 !function.IsDependent && !function.IsPure && function.Namespace.IsGenerated &&
                 (!string.IsNullOrEmpty(function.Body) ||
                  isInImplicitSpecialization || function.IsImplicit) &&
                 (method?.NeedsSymbol() != false) &&
                 // we cannot handle nested anonymous types
                 (!(function.Namespace is Class) || !string.IsNullOrEmpty(function.Namespace.OriginalName)) &&
-                !Context.Symbols.FindLibraryBySymbol(function.Mangled, out _);
+                !Context.Symbols.FindLibraryBySymbol(function.Mangled, out libraryFind);
+
+            if (libraryFind != null && function.TranslationUnit.Module == Options.SystemModule)
+            {
+                return true;
+            }
+
+            return needs;
         }
 
         private SymbolsCodeGenerator GetSymbolsCodeGenerator(Module module)
