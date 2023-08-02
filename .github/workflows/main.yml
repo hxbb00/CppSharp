@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dotnet-version: [ '3.1.x' ]
+        dotnet-version: [ '3.1.426' ]
         config:
           - { os: ubuntu-20.04, platform: x64, cxx: g++-9, cc: gcc-9 }
           - { os: windows-2019, platform: x64, vs: msvc }
