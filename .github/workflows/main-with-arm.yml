@@ -80,7 +80,7 @@ jobs:
           pwd
           ls -al "${PWD}/artifacts"
           
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: intermediate
           path: |
@@ -157,7 +157,7 @@ jobs:
         shell: bash
         run: build/build.sh prepack -platform $PLATFORM
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: intermediate
           path: |
@@ -180,7 +180,7 @@ jobs:
       - name: Set version
         run: nbgv cloud --all-vars
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: intermediate
 
@@ -193,7 +193,7 @@ jobs:
         run: build/build.sh pack
 
       - name: Upload package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: CppSharp.nupkg
           path: |
