@@ -2289,6 +2289,8 @@ internal static bool {Helpers.TryGetNativeToManagedMappingIdentifier}(IntPtr nat
 
             if (@class.IsRefType)
             {
+                var typeFullName = TypePrinter.VisitClassDecl(@class).Type;
+                WriteLine($"System.Diagnostics.Debug.WriteLine($\"Dispose {typeFullName} by: {{this.__debugCallerMemberName}}\");");
                 WriteLine("if ({0} == IntPtr.Zero)", Helpers.InstanceIdentifier);
                 WriteLineIndent("return;");
 
@@ -3036,9 +3038,9 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
                 // fetch the managed class from the native pointer. vtable hooking is required to allow C++
                 // code to call virtual methods defined on a C++ class but overwritten in a C# class.
                 // todo: throwing an exception at runtime is ugly, we should seal the class instead
-                var typeFullName = TypePrinter.VisitClassDecl(@class).Type.Replace("global::", string.Empty);
-                WriteLine($@"if (GetType().FullName != ""{typeFullName}"")");
-                WriteLineIndent($@"throw new System.Exception(""{typeFullName}: Can't inherit from classes with disabled NativeToManaged map"");");
+                //var typeFullName = TypePrinter.VisitClassDecl(@class).Type.Replace("global::", string.Empty);
+                //WriteLine($@"if (GetType().FullName != ""{typeFullName}"")");
+                //WriteLineIndent($@"throw new System.Exception(""{typeFullName}: Can't inherit from classes with disabled NativeToManaged map"");");
             }
 
             var @internal = TypePrinter.PrintNative(
