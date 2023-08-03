@@ -7,7 +7,7 @@ namespace CppSharp.Runtime
     // HACK: .NET Standard 2.0 which we use in auto-building to support .NET Framework, lacks UnmanagedType.LPUTF8Str
     public class ASCIIMarshaller : ICustomMarshaler
     {
-        public readonly static Encoding ANSI = Encoding.GetEncoding("GB2312");
+        public readonly static Encoding ANSI = Encoding.GetEncoding("GB18030");
         public void CleanUpManagedData(object ManagedObj)
         {
         }
