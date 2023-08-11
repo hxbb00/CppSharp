@@ -8,7 +8,7 @@
 
 > @echo start build
 
-> dotnet "%~dp0ABC.dll"
+> dotnet "ABC.dll"
 
 2. build on windows
 
@@ -23,6 +23,6 @@
 > "D:\Program Files\Git\bin\sh.exe" ./build/build.sh -build_only -platform x64
 
 3. Debug on Windows  
-Windows µ÷ÊÔ£ºĞŞ¸Ä.\build\config.props  
+edit .\build\config.props  
 Configuration -> Debug  
 CI-> true  

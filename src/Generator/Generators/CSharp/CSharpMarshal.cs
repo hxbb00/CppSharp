@@ -746,11 +746,13 @@ namespace CppSharp.Generators.CSharp
 
             if (!type.IsAddress())
             {
+                var realClass = @class.OriginalClass ?? @class;
+                Context.Before.WriteLine($@"global::System.Console.WriteLine(""WARNING: {realClass.Visit(typePrinter)} is passed by value, Be careful with the operator= "");");
                 Context.Before.WriteLine($"if (ReferenceEquals({Context.Parameter.Name}, null))");
                 Context.Before.WriteLineIndent(
                     $@"throw new global::System.ArgumentNullException(""{
                         Context.Parameter.Name}"", ""Cannot be null because it is passed by value."");");
-                var realClass = @class.OriginalClass ?? @class;
+
                 var qualifiedIdentifier = typePrinter.PrintNative(realClass);
                 Context.ArgumentPrefix.Write($"*({qualifiedIdentifier}*) ");
                 Context.Return.Write(paramInstance);
@@ -768,6 +770,7 @@ namespace CppSharp.Generators.CSharp
             {
                 if (Context.Parameter.IsIndirect)
                 {
+                    Context.Before.WriteLine($@"global::System.Console.WriteLine(""WARNING: {finalType} is passed by value, Be careful with the operator= "");");
                     Context.Before.WriteLine($"if (ReferenceEquals({Context.Parameter.Name}, null))");
                     Context.Before.WriteLineIndent(
                         $@"throw new global::System.ArgumentNullException(""{
