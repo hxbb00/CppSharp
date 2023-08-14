@@ -115,21 +115,6 @@ function SetupLLVMLibs()
   filter { "toolset:msc*" }
     links { "version" }
 
-  filter { "architecture:aarch64 or arm64" }
-    links 
-    { 
-      "LLVMAArch64Disassembler",
-      "LLVMAArch64AsmParser",
-      "LLVMAArch64CodeGen",
-      "LLVMAArch64Desc",
-      "LLVMAArch64Info",
-      "LLVMARMDisassembler",
-      "LLVMARMAsmParser",
-      "LLVMARMCodeGen",
-      "LLVMARMDesc",
-      "LLVMARMInfo"
-    }
-
   filter {}
 
   if LLVMDirPerConfiguration then
@@ -149,7 +134,7 @@ function SetupLLVMLibs()
       libdirs { path.join(LLVMBuildDir, "RelWithDebInfo/lib") }
   end
 
-  filter {}
+  filter { "architecture:x86*" }
 
     links
     {
@@ -219,6 +204,79 @@ function SetupLLVMLibs()
       "lldELF",
       "lldMachO"
     }
-    
+  
+  filter { "architecture:arm* or aarch*" }
+
+    links
+    {
+      "clangFrontend",
+      "clangDriver",
+      "clangSerialization",
+      "clangCodeGen",
+      "clangParse",
+      "clangSema",
+      "clangAnalysis",
+      "clangEdit",
+      "clangAST",
+      "clangLex",
+      "clangBasic",
+      "clangIndex",
+      "LLVMWindowsManifest",
+      "LLVMDebugInfoPDB",
+      "LLVMLTO",
+      "LLVMPasses",
+      "LLVMObjCARCOpts",
+      "LLVMLibDriver",
+      "LLVMFrontendOpenMP",
+      "LLVMOption",
+      "LLVMCoverage",
+      "LLVMCoroutines",
+      "LLVMX86Disassembler",
+      "LLVMX86AsmParser",
+      "LLVMX86CodeGen",
+      "LLVMX86Desc",
+      "LLVMX86Info",
+      "LLVMAArch64Disassembler", "LLVMAArch64AsmParser", "LLVMAArch64CodeGen", "LLVMAArch64Desc", "LLVMAArch64Info", "LLVMAArch64Utils",
+      "LLVMARMDisassembler", "LLVMARMAsmParser", "LLVMARMCodeGen", "LLVMARMDesc", "LLVMARMInfo", "LLVMARMUtils",
+      "LLVMipo",
+      "LLVMInstrumentation",
+      "LLVMVectorize",
+      "LLVMLinker",
+      "LLVMIRReader",
+      "LLVMAsmParser",
+      "LLVMMCDisassembler",
+      "LLVMCFGuard",
+      "LLVMGlobalISel",
+      "LLVMSelectionDAG",
+      "LLVMAsmPrinter",
+      "LLVMDebugInfoDWARF",
+      "LLVMCodeGen",
+      "LLVMTarget",
+      "LLVMScalarOpts",
+      "LLVMInstCombine",
+      "LLVMAggressiveInstCombine",
+      "LLVMTransformUtils",
+      "LLVMBitWriter",
+      "LLVMAnalysis",
+      "LLVMProfileData",
+      "LLVMObject",
+      "LLVMTextAPI",
+      "LLVMBitReader",
+      "LLVMCore",
+      "LLVMRemarks",
+      "LLVMBitstreamReader",
+      "LLVMMCParser",
+      "LLVMMC",
+      "LLVMDebugInfoCodeView",
+      "LLVMDebugInfoMSF",
+      "LLVMBinaryFormat",
+      "LLVMSupport",
+      "LLVMDemangle",
+      "lldCommon",
+      "lldCOFF",
+      "lldELF",
+      "lldMachO"
+    }
+
   filter(c)
 end
