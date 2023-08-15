@@ -124,13 +124,6 @@ namespace CppSharp.Passes
 
             if (!NeedsSymbol(function))
             {
-                if (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
-                    == System.Runtime.InteropServices.Architecture.Arm64 && function.IsReturnIndirect)
-                {
-                    Module module0 = function.TranslationUnit.Module;
-                    return function.Visit(GetSymbolsCodeGenerator(module0));
-                }
-
                 return false;
             }
 

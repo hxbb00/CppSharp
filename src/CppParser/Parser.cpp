@@ -4720,6 +4720,8 @@ ParserResult* Parser::ParseLibrary(const CppLinkerOptions* Opts)
                     FileName.compare(0, PrefixedLib.size(), PrefixedLib) == 0)
                 {
                     FileEntry = File->path();
+
+                    printf("find Library: %s\n", FileEntry.c_str());
                     goto found;
                 }
             }

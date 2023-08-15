@@ -3153,19 +3153,6 @@ internal static{(@new ? " new" : string.Empty)} {printedClass} __GetInstance({Ty
                     var @class = retClass.OriginalClass ?? retClass;
                     var clsNative = TypePrinter.PrintNative(@class);
                     WriteLine($@"var {Helpers.ReturnIdentifier} = new {clsNative}();");
-                    if (@class.HasNonTrivialDefaultConstructor)
-                    {
-                        if (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
-                        == System.Runtime.InteropServices.Architecture.Arm64){
-                            var defaultCtorMethod = @class.Methods.FirstOrDefault(method_0 => method_0.IsDefaultConstructor);
-                            if (defaultCtorMethod.Parameters.Count == 0)
-                            {
-                                var nativeCtorFunction = GetFunctionNativeIdentifier(defaultCtorMethod);
-                                var nameCtor = string.Format("new IntPtr(&{0})", Helpers.ReturnIdentifier);
-                                WriteLine($@"{clsNative}.{nativeCtorFunction}({nameCtor});");
-                            }
-                        }
-                    }
                 }
                 else
                 {

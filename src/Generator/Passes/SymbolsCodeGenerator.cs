@@ -44,12 +44,6 @@ namespace CppSharp.Passes
 
         public override bool VisitMethodDecl(Method method)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
-                    == System.Runtime.InteropServices.Architecture.Arm64 && method.IsReturnIndirect)
-            {
-                return VisitReturnIndirectMethodDecl(method);
-            }
-
             if (method.IsDestructor &&
                 (!((Class)method.Namespace).HasNonTrivialDestructor ||
                  method.Access == AccessSpecifier.Private))
@@ -100,12 +94,6 @@ namespace CppSharp.Passes
 
         public override bool VisitFunctionDecl(Function function)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
-                    == System.Runtime.InteropServices.Architecture.Arm64 && function.IsReturnIndirect)
-            {
-                return VisitReturnIndirectMethodDecl(function);
-            }
-
             TakeFunctionAddress(function, GetWrapper(function));
             return true;
         }
