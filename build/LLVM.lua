@@ -278,5 +278,7 @@ function SetupLLVMLibs()
       "lldMachO"
     }
 
+  filter {}
+
   filter(c)
 end
