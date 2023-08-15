@@ -4693,8 +4693,16 @@ ParserResult* Parser::ParseLibrary(const CppLinkerOptions* Opts)
         }
 
         std::string PrefixedLib = "lib" + Lib;
+        std::string OriLib = Lib;
         std::string FileName;
         std::string FileEntry;
+#if defined(__linux__)
+        PrefixedLib += ".so";
+        OriLib += ".so";
+#else
+        PrefixedLib += ".lib";
+        OriLib += ".lib";
+#endif
 
         using namespace llvm::sys;
         for (const auto& LibDir : Opts->LibraryDirs)
@@ -4708,10 +4716,8 @@ ParserResult* Parser::ParseLibrary(const CppLinkerOptions* Opts)
                 FileName = path::filename(File->path()).str();
                 if (FileName == Lib ||
                     FileName == PrefixedLib ||
-                    path::stem(FileName) == Lib ||
-                    path::stem(FileName) == PrefixedLib ||
-                    path::stem(path::stem(FileName)) == Lib ||
-                    path::stem(path::stem(FileName)) == PrefixedLib)
+                    FileName.compare(0, OriLib.size(), OriLib) == 0 ||
+                    FileName.compare(0, PrefixedLib.size(), PrefixedLib) == 0)
                 {
                     FileEntry = File->path();
                     goto found;
