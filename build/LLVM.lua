@@ -134,7 +134,7 @@ function SetupLLVMLibs()
       libdirs { path.join(LLVMBuildDir, "RelWithDebInfo/lib") }
   end
 
-  filter { "architecture:x86*" }
+  filter { "architecture:x86* or x64*" }
 
     links
     {
