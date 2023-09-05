@@ -48,7 +48,7 @@ jobs:
           install: |
             apt-get update -q -y
             apt-get install -q -y --no-install-recommends cmake make build-essential gdb git apt-utils curl unzip ca-certificates
-            apt-get install -q -y --no-install-recommends ninja-build python3-dev wget sudo
+            apt-get install -q -y --no-install-recommends ninja-build python3-dev wget sudo software-properties-common python-software-properties
 
           run: |
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
