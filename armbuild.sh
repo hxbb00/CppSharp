@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 ./build/build.sh clean
 ./build/build.sh generate -platform aarch64
