@@ -49,12 +49,12 @@ jobs:
             apt-get update -q -y
             apt-get install -q -y --no-install-recommends cmake make build-essential gdb git apt-utils curl unzip ca-certificates
             apt-get install -q -y --no-install-recommends ninja-build python3-dev wget sudo
-            apt-get install -q -y gcc-9 g++-9
+            apt-get install -q -y gcc-7 g++-7
 
           run: |
-            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100
+            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100
             sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 50
-            sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 100
+            sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 100
             sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 50            
             uname -a
             pwd
