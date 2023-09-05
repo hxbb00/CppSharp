@@ -51,6 +51,13 @@ jobs:
             apt-get install -q -y --no-install-recommends ninja-build python3-dev wget sudo software-properties-common python-software-properties
 
           run: |
+            sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+            apt-get update -q -y
+            apt-get install -q -y gcc-9 g++-9
+            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100
+            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 50
+            sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 100
+            sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 50
             uname -a
             pwd
             ls -al "${PWD}"
