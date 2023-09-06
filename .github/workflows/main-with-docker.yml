@@ -1,0 +1,83 @@
+name: CI-with-docker
+
+on:
+    workflow_dispatch:
+
+jobs:
+  buildx64-on-docker:
+    strategy:
+      fail-fast: false
+      matrix:
+        dotnet-version: [ '3.1' ]
+
+    runs-on: ubuntu-20.04
+    container:
+      image: ubuntu-16.04
+      env:
+        NODE_ENV: development
+      volumes:
+        - /home/runner/work:/home/runner/work
+
+    env:
+      CC: gcc
+      CXX: g++
+      PLATFORM: x64
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+    steps:
+      - name: Check for dockerenv file
+        run: (ls /.dockerenv && echo Found dockerenv) || (echo No dockerenv)
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      # You can test your matrix by printing the current dotnet version
+      - name: Display dotnet version
+        run: dotnet --version
+
+      - name: Uninstall nbgv
+        run: |
+          dotnet tool uninstall --global nbgv
+
+      - name: Install nbgv
+        run: |
+          dotnet tool install --global nbgv --version 3.5.119
+
+      - name: Set version
+        run: nbgv cloud --all-vars
+
+      - name: Setup
+        shell: bash
+        run: |
+          build/build.sh generate -platform $PLATFORM
+          build/build.sh download_llvm -platform $PLATFORM
+
+      - name: Restore
+        shell: bash
+        run: build/build.sh restore -platform $PLATFORM
+
+      - name: Build
+        shell: bash
+        run: build/build.sh -platform $PLATFORM -build_only
+
+      # - name: Test
+      #   shell: bash
+      #   run: build/test.sh -platform $PLATFORM
+
+      - name: Pack
+        shell: bash
+        run: build/build.sh prepack -platform $PLATFORM
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: intermediate
+          path: |
+            artifacts
+            include/**/*.h
