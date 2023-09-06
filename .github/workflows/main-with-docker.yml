@@ -37,6 +37,7 @@ jobs:
         shell: bash
         run: |
           uname -a
+          cat /proc/version
           pwd
           ls -al "${PWD}"
           echo "Setup dotnet 3.1.x"
@@ -46,6 +47,7 @@ jobs:
           export DOTNET_ROOT=$HOME/.dotnet
           export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
           dotnet --version
+          dotnet tool install --global nbgv --version 3.5.119
           nbgv cloud --all-vars
 
       - name: Setup

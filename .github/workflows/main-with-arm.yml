@@ -52,6 +52,7 @@ jobs:
 
           run: |
             uname -a
+            cat /proc/version
             pwd
             ls -al "${PWD}"
             echo "Setup dotnet 3.1.x"
