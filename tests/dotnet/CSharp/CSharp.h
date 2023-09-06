@@ -2,6 +2,7 @@
 
 #include "../Tests.h"
 #include <atomic>
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 #include <limits>
