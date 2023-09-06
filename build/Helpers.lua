@@ -108,7 +108,7 @@ end
 function SetupNativeProject()
   location (path.join(actionbuilddir, "projects"))
   files { "*.lua" }
-  cppdialect "c++11"
+  cppdialect "c++14"
 
   if os.getenv("CPPSHARP_RELEASE") == "true" then
     symbols "off"

@@ -142,6 +142,7 @@ private:
     void SetBody(const clang::FunctionDecl* FD, Function* F);
     void MarkValidity(Function* F);
     void WalkFunction(const clang::FunctionDecl* FD, Function* F);
+    bool CanAnyOfCheckCodeGenInfo(const clang::FunctionDecl* FD);
     int GetAlignAs(const clang::AlignedAttr* alignedAttr);
     void HandlePreprocessedEntities(Declaration* Decl);
     void HandlePreprocessedEntities(Declaration* Decl, clang::SourceRange sourceRange,

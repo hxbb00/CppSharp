@@ -3422,8 +3422,7 @@ void Parser::WalkFunction(const clang::FunctionDecl* FD, Function* F)
         ((MD = dyn_cast<CXXMethodDecl>(FD)) && !MD->isStatic() &&
             !HasLayout(cast<CXXRecordDecl>(MD->getDeclContext()))) ||
         !CanCheckCodeGenInfo(FD->getReturnType().getTypePtr()) ||
-        std::any_of(FD->parameters().begin(), FD->parameters().end(),
-            [this](auto* P) { return !CanCheckCodeGenInfo(P->getType().getTypePtr()); }))
+        CanAnyOfCheckCodeGenInfo(FD))
     {
         return;
     }
@@ -3438,6 +3437,18 @@ void Parser::WalkFunction(const clang::FunctionDecl* FD, Function* F)
         F->Parameters[Index++]->isIndirect =
             Arg.info.isIndirect() && !Arg.info.getIndirectByVal();
     }
+}
+
+bool Parser::CanAnyOfCheckCodeGenInfo(const clang::FunctionDecl* FD) {
+    auto _UFirst = FD->parameters().begin();
+    const auto _ULast = FD->parameters().end();
+    for (; _UFirst != _ULast; ++_UFirst) {
+        if (!CanCheckCodeGenInfo(_UFirst->getType().getTypePtr())) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 Function* Parser::WalkFunction(const clang::FunctionDecl* FD)
