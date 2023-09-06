@@ -59,6 +59,8 @@ jobs:
             dotnet tool install --global nbgv --version 3.5.119
 
           run: |
+            export DOTNET_ROOT=$HOME/.dotnet
+            export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
             uname -a
             pwd
             ls -al "${PWD}"
