@@ -16,10 +16,6 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
-      env:
-        NODE_ENV: development
-      volumes:
-        - /home/runner/work:/home/runner/work
 
     env:
       CC: gcc
@@ -38,7 +34,7 @@ jobs:
 
       # You can test your matrix by printing the current dotnet version
       - name: Display dotnet version
-        run: dotnet --version
+        run: uname -a && dotnet --version
 
       - name: Set version
         run: nbgv cloud --all-vars
