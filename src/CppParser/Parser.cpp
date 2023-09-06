@@ -3443,7 +3443,7 @@ bool Parser::CanAnyOfCheckCodeGenInfo(const clang::FunctionDecl* FD) {
     auto _UFirst = FD->parameters().begin();
     const auto _ULast = FD->parameters().end();
     for (; _UFirst != _ULast; ++_UFirst) {
-        if (!CanCheckCodeGenInfo(_UFirst->getType().getTypePtr())) {
+        if (!CanCheckCodeGenInfo((*_UFirst)->getType().getTypePtr())) {
             return true;
         }
     }
