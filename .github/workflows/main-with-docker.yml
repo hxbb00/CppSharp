@@ -5,11 +5,6 @@ on:
 
 jobs:
   buildx64-on-docker:
-    strategy:
-      fail-fast: false
-      matrix:
-        dotnet-version: [ '3.1' ]
-
     runs-on: ubuntu-20.04
     container:
       image: 'ghcr.io/hxbb00/ubuntu1604:main'
@@ -40,14 +35,7 @@ jobs:
           cat /proc/version
           pwd
           ls -al "${PWD}"
-          echo "Setup dotnet 3.1.x"
-          wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh -O dotnet-install.sh
-          sudo chmod +x ./dotnet-install.sh
-          ./dotnet-install.sh --version 3.1.426
-          export DOTNET_ROOT=$HOME/.dotnet
-          export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
           dotnet --version
-          dotnet tool install --global nbgv --version 3.5.119
           nbgv cloud --all-vars
           build/build.sh generate -platform $PLATFORM
           build/build.sh download_llvm -platform $PLATFORM
@@ -56,10 +44,3 @@ jobs:
           build/build.sh -platform $PLATFORM -build_only
           echo "Pack"
           build/build.sh prepack -platform $PLATFORM
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: intermediate
-          path: |
-            artifacts
-            include/**/*.h
