@@ -32,7 +32,7 @@ end
 function execute_or_die(cmd, quiet)
   local res = execute(cmd, quiet)
   if res > 0 then
-    error("Error executing shell command, aborting...")
+    error("Error executing shell command:" .. cmd .. ", aborting...")
   end
   return res
 end
