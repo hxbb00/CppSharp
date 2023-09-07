@@ -44,7 +44,6 @@ jobs:
             CXX: g++
             PLATFORM: ${{ matrix.arch }}
             ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-            PATH: "/root/.dotnet/tools:${PATH}"
 
           install: |
             apt-get update -q -y
