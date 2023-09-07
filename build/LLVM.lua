@@ -134,7 +134,7 @@ function SetupLLVMLibs()
       libdirs { path.join(LLVMBuildDir, "RelWithDebInfo/lib") }
   end
 
-  filter { "architecture:x86* or x64*" }
+  filter { "toolset:msc*" }
 
     links
     {
@@ -205,7 +205,7 @@ function SetupLLVMLibs()
       "lldMachO"
     }
   
-  filter { "architecture:arm* or aarch*" }
+  filter { "toolset:not msc*" }
 
     links
     {

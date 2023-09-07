@@ -88,13 +88,73 @@ jobs:
             artifacts
             include/**/*.h
 
-  build-x86:
+  buildx64-on-docker:
+    strategy:
+      fail-fast: false
+      matrix:
+        dotnet-version: [ '3.1' ]
+
+    runs-on: ubuntu-20.04
+    container:
+      image: 'ghcr.io/hxbb00/ubuntu1604:main'
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.github_token }}
+
+    env:
+      CC: gcc
+      CXX: g++
+      PLATFORM: x64
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+    steps:
+      - name: Check for dockerenv file
+        run: (ls /.dockerenv && echo Found dockerenv) || (echo No dockerenv)
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      # You can test your matrix by printing the current dotnet version
+      - name: Setup dotnet
+        shell: bash
+        run: |
+          uname -a
+          cat /proc/version
+          pwd
+          ls -al "${PWD}"
+          echo "Setup dotnet 3.1.x"
+          wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh -O dotnet-install.sh
+          sudo chmod +x ./dotnet-install.sh
+          ./dotnet-install.sh --version 3.1.426
+          export DOTNET_ROOT=$HOME/.dotnet
+          export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
+          dotnet --version
+          dotnet tool install --global nbgv --version 3.5.119
+          nbgv cloud --all-vars
+          build/build.sh generate -platform $PLATFORM
+          build/build.sh download_llvm -platform $PLATFORM
+          build/build.sh restore -platform $PLATFORM
+          echo "Build"
+          build/build.sh -platform $PLATFORM -build_only
+          echo "Pack"
+          build/build.sh prepack -platform $PLATFORM
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: intermediate
+          path: |
+            artifacts
+            include/**/*.h
+
+
+  build-x86-win:
     strategy:
       fail-fast: false
       matrix:
         dotnet-version: [ '3.1.x' ]
         config:
-          - { os: ubuntu-20.04, platform: x64, cxx: g++-10, cc: gcc-10 }
           - { os: windows-2019, platform: x64, vs: msvc }
 
     runs-on: ${{ matrix.config.os }}
@@ -167,7 +227,7 @@ jobs:
 
   create_package:
     runs-on: windows-2019
-    needs: [build-x86, build-arm]
+    needs: [build-x86-win, build-arm, buildx64-on-docker]
 
     env:
       DOTNET_NOLOGO: true
