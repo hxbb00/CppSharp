@@ -49,28 +49,13 @@ jobs:
           dotnet --version
           dotnet tool install --global nbgv --version 3.5.119
           nbgv cloud --all-vars
-
-      - name: Setup
-        shell: bash
-        run: |
           build/build.sh generate -platform $PLATFORM
           build/build.sh download_llvm -platform $PLATFORM
-
-      - name: Restore
-        shell: bash
-        run: build/build.sh restore -platform $PLATFORM
-
-      - name: Build
-        shell: bash
-        run: build/build.sh -platform $PLATFORM -build_only
-
-      # - name: Test
-      #   shell: bash
-      #   run: build/test.sh -platform $PLATFORM
-
-      - name: Pack
-        shell: bash
-        run: build/build.sh prepack -platform $PLATFORM
+          build/build.sh restore -platform $PLATFORM
+          echo "Build"
+          build/build.sh -platform $PLATFORM -build_only
+          echo "Pack"
+          build/build.sh prepack -platform $PLATFORM
 
       - uses: actions/upload-artifact@v3
         with:
