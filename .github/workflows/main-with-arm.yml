@@ -56,7 +56,6 @@ jobs:
             ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
             dotnet tool install --global nbgv --version 3.5.119
             echo 'export PATH="$PATH:/root/.dotnet/tools"' >> /etc/profile.d/dotnet.sh
-            . /etc/profile
 
           run: |
             uname -a
