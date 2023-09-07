@@ -54,15 +54,16 @@ jobs:
             sudo chmod +x ./dotnet-install.sh
             ./dotnet-install.sh --version 3.1.426 --install-dir /usr/share/dotnet
             ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
-            dotnet tool install --global nbgv --version 3.5.119
-            echo 'export PATH="$PATH:/root/.dotnet/tools"' >> /etc/profile.d/dotnet.sh
 
           run: |
             uname -a
             cat /proc/version
             pwd
             ls -al "${PWD}"
-            dotnet --version
+            export DOTNET_ROOT=/usr/share/dotnet
+            export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
+            dotnet --version 
+            dotnet tool install --global nbgv --version 3.5.119
             nbgv cloud --all-vars
             echo "Setup"
             ./build/build.sh clean -platform aarch64
