@@ -55,7 +55,7 @@ jobs:
             ./dotnet-install.sh --version 3.1.426 --install-dir /usr/share/dotnet
             ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
             dotnet tool install --global nbgv --version 3.5.119
-            echo 'export PATH="$PATH:/root/.dotnet/tools"' >> /etc/profile
+            echo 'export PATH="$PATH:/root/.dotnet/tools"' >> /etc/profile.d/dotnet.sh
             . /etc/profile
 
           run: |
