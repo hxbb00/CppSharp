@@ -74,7 +74,7 @@ end
 
 local function target_framework()
   local value =  _OPTIONS["target-framework"]
-  return string.isempty(value) and "netcoreapp3.1" or value
+  return string.isempty(value) and "net8" or value
 end
 
 targetframework = target_framework()

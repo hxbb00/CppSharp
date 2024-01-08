@@ -3,7 +3,7 @@ set -e
 builddir=$(cd "$(dirname "$0")"; pwd)
 platform=x64
 dotnet_platform=x64
-vs=vs2019
+vs=vs2022
 configuration=Release
 build_only=false
 ci=false

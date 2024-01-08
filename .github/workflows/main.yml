@@ -11,7 +11,7 @@ jobs:
         dotnet-version: [ '3.1' ]
         config:
           - { os: ubuntu-20.04, platform: x64, cxx: g++-9, cc: gcc-9 }
-          - { os: windows-2019, platform: x64, vs: msvc }
+          - { os: windows-2022, platform: x64, vs: "Program Files/Microsoft Visual Studio/2022" }
 
     runs-on: ${{ matrix.config.os }}
 
