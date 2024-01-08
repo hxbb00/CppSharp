@@ -439,6 +439,17 @@
             return false;
         }
 
+        public static bool IsTemplateParameterType(this Type type)
+        {
+            if (type is TemplateParameterType or TemplateParameterSubstitutionType)
+                return true;
+
+            if (type is PointerType pt)
+                return pt.GetFinalPointee() is TemplateParameterType or TemplateParameterSubstitutionType;
+
+            return false;
+        }
+
         public static Module GetModule(this Type type)
         {
             Declaration declaration;

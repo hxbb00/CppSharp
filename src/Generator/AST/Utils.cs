@@ -30,7 +30,7 @@ namespace CppSharp.AST
             var isEmptyCtor = method.IsConstructor && method.Parameters.Count == 0;
 
             var @class = method.Namespace as Class;
-            if (@class != null && @class.IsValueType && isEmptyCtor)
+            if (@class != null && @class.IsValueType && isEmptyCtor && !@class.HasNonTrivialDefaultConstructor)
                 return true;
 
             if (method.IsDestructor)
@@ -207,7 +207,7 @@ namespace CppSharp.AST
                 return false;
 
             var typePrinterContext = new TypePrinterContext { Type = type };
-            var mappedTo = typeMap.CSharpSignatureType(typePrinterContext);
+            var mappedTo = typeMap.SignatureType(typePrinterContext);
             mappedTo = mappedTo.Desugar();
             mappedTo = (mappedTo.GetFinalPointee() ?? mappedTo).Desugar();
             return (mappedTo.IsPrimitiveType() ||

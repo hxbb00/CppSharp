@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CppSharp.AST;
 using CppSharp.AST.Extensions;
@@ -61,7 +62,8 @@ namespace CppSharp.Generators.CLI
                 if (typeRef.Include.TranslationUnit == TranslationUnit)
                     continue;
 
-                if (typeRef.Include.File == TranslationUnit.FileName)
+                var filename = Context.Options.GenerateName != null ? $"{Context.Options.GenerateName(TranslationUnit)}{Path.GetExtension(TranslationUnit.FileName)}" : TranslationUnit.FileName;
+                if (typeRef.Include.File == filename)
                     continue;
 
                 var include = typeRef.Include;
@@ -219,7 +221,7 @@ namespace CppSharp.Generators.CLI
         {
             PushBlock(BlockKind.FunctionsClass, decl);
 
-            WriteLine("public ref class {0}", TranslationUnit.FileNameWithoutExtension);
+            WriteLine("public ref class {0}", Options.GenerateFreeStandingFunctionsClassName(TranslationUnit));
             WriteLine("{");
             WriteLine("public:");
             Indent();
@@ -798,7 +800,8 @@ namespace CppSharp.Generators.CLI
         public static bool FunctionIgnored(Function function)
         {
             return TypeIgnored(function.ReturnType.Type) ||
-                function.Parameters.Any(param => TypeIgnored(param.Type));
+                function.Parameters.Any(param => TypeIgnored(param.Type)) ||
+                function is Method { IsConstructor: true, Parameters: { Count: 0 }, Namespace: Class { IsValueType: true } };
         }
 
         public static bool TypeIgnored(CppSharp.AST.Type type)

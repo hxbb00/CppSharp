@@ -45,7 +45,7 @@ namespace CppSharp.Generators.CSharp
             TypeMap typeMap;
             if (Context.Context.TypeMaps.FindTypeMap(type, out typeMap) && typeMap.DoesMarshalling)
             {
-                typeMap.CSharpMarshalToManaged(Context);
+                typeMap.MarshalToManaged(Context);
                 return false;
             }
 
@@ -471,7 +471,7 @@ namespace CppSharp.Generators.CSharp
             TypeMap typeMap;
             if (Context.Context.TypeMaps.FindTypeMap(type, out typeMap) && typeMap.DoesMarshalling)
             {
-                typeMap.CSharpMarshalToNative(Context);
+                typeMap.MarshalToNative(Context);
                 return false;
             }
 
@@ -601,7 +601,7 @@ namespace CppSharp.Generators.CSharp
                 if (Context.Context.Options.MarshalCharAsManagedChar &&
                     primitive == PrimitiveType.Char)
                 {
-                    Context.Return.Write($"({typePrinter.PrintNative(pointer)})");
+                    Context.Return.StringBuilder.Insert(0, $"({typePrinter.PrintNative(pointer)}) ");
                     if (isConst)
                         Context.Return.Write("&");
                     Context.Return.Write(param.Name);
@@ -634,17 +634,25 @@ namespace CppSharp.Generators.CSharp
             {
                 if (Context.Parameter.Usage == ParameterUsage.Out)
                 {
-                    var qualifiedIdentifier = (@class.OriginalClass ?? @class).Visit(typePrinter);
-                    Context.Before.WriteLine("var {0} = new {1}.{2}();",
-                        arg, qualifiedIdentifier, Helpers.InternalStruct);
+                    Context.Before.WriteLine("fixed ({0}.{1}* {2} = &{3}.{4})",
+                        Context.Parameter.QualifiedType, Helpers.InternalStruct,
+                        arg, Context.Parameter.Name, Helpers.InstanceIdentifier);
+                    Context.HasCodeBlock = true;
+                    Context.Before.WriteOpenBraceAndIndent();
+                    Context.Return.Write($"new {typePrinter.IntPtrType}({arg})");
                 }
                 else
                 {
-                    Context.Before.WriteLine("var {0} = {1}.{2};",
-                        arg, Context.Parameter.Name, Helpers.InstanceIdentifier);
+                    Context.Before.Write($"var {arg} = ");
+                    if (pointer.Pointee.IsTemplateParameterType())
+                        Context.Before.Write($"(({Context.Parameter.Type}) (object) {Context.Parameter.Name})");
+                    else
+                        Context.Before.Write(Context.Parameter.Name);
+                    Context.Before.WriteLine($".{Helpers.InstanceIdentifier};");
+                    
+                    Context.Return.Write($"new {typePrinter.IntPtrType}(&{arg})");
                 }
 
-                Context.Return.Write($"new {typePrinter.IntPtrType}(&{arg})");
                 return true;
             }
 
@@ -805,7 +813,12 @@ namespace CppSharp.Generators.CSharp
 
         private void MarshalValueClass()
         {
-            Context.Return.Write("{0}.{1}", Context.Parameter.Name, Helpers.InstanceIdentifier);
+            if (Context.Parameter.Type.IsTemplateParameterType())
+                Context.Return.Write($"(({Context.Parameter.Type}) (object) {Context.Parameter.Name})");
+            else
+                Context.Return.Write(Context.Parameter.Name);
+
+            Context.Return.Write($".{Helpers.InstanceIdentifier}");
         }
 
         public override bool VisitFieldDecl(Field field)

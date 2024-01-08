@@ -18,12 +18,13 @@ jobs:
     env:
       CC: ${{ matrix.config.cc }}
       CXX: ${{ matrix.config.cxx }}
+      VS_VERSION: ${{ matrix.config.vs }}
       PLATFORM: ${{ matrix.config.platform }}
       DOTNET_NOLOGO: true
       DOTNET_CLI_TELEMETRY_OPTOUT: true
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: '0'
 
@@ -50,7 +51,7 @@ jobs:
       - name: Environment
         if: matrix.config.vs
         shell: bash
-        run: echo "/c/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/MSBuild/Current/Bin" >> $GITHUB_PATH
+        run: echo "/c/$VS_VERSION/Enterprise/MSBuild/Current/Bin" >> $GITHUB_PATH
 
       - name: Setup
         shell: bash
@@ -90,7 +91,7 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: true
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: '0'
 

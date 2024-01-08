@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -6,47 +7,48 @@ using CppSharp.AST;
 using CppSharp.AST.Extensions;
 using CppSharp.Generators;
 using CppSharp.Generators.CSharp;
+using Type = CppSharp.AST.Type;
 
-namespace CppSharp.Types.Std
+namespace CppSharp.Types.Std.CSharp
 {
-    [TypeMap("int", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class Int : TypeMap
+    [TypeMap("int", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class Int : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx) =>
+        public override Type SignatureType(TypePrinterContext ctx) =>
             CSharpTypePrinter.GetSignedType(Context.TargetInfo.IntWidth);
     }
 
-    [TypeMap("unsigned int", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class UnsignedInt : TypeMap
+    [TypeMap("unsigned int", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class UnsignedInt : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx) =>
+        public override Type SignatureType(TypePrinterContext ctx) =>
             CSharpTypePrinter.GetUnsignedType(Context.TargetInfo.IntWidth);
     }
 
-    [TypeMap("long", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class Long : TypeMap
+    [TypeMap("long", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class Long : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx) =>
+        public override Type SignatureType(TypePrinterContext ctx) =>
             CSharpTypePrinter.GetSignedType(Context.TargetInfo.LongWidth);
     }
 
-    [TypeMap("unsigned long", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class UnsignedLong : TypeMap
+    [TypeMap("unsigned long", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class UnsignedLong : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx) =>
+        public override Type SignatureType(TypePrinterContext ctx) =>
             CSharpTypePrinter.GetUnsignedType(Context.TargetInfo.LongWidth);
     }
 
-    [TypeMap("char", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class Char : TypeMap
+    [TypeMap("char", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class Char : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new CILType(ctx.Kind == TypePrinterContextKind.Native ||
                 !Context.Options.MarshalCharAsManagedChar ? typeof(sbyte) : typeof(char));
         }
 
-        public override void CSharpMarshalToNative(CSharpMarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             if (Context.Options.MarshalCharAsManagedChar)
                 ctx.Return.Write("global::System.Convert.ToSByte({0})",
@@ -55,7 +57,7 @@ namespace CppSharp.Types.Std
                 ctx.Return.Write(ctx.Parameter.Name);
         }
 
-        public override void CSharpMarshalToManaged(CSharpMarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             if (Context.Options.MarshalCharAsManagedChar)
                 ctx.Return.Write("global::System.Convert.ToChar({0})",
@@ -65,28 +67,28 @@ namespace CppSharp.Types.Std
         }
     }
 
-    [TypeMap("char16_t", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class Char16T : TypeMap
+    [TypeMap("char16_t", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class Char16T : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new CILType(typeof(char));
         }
     }
 
-    [TypeMap("wchar_t", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class WCharT : TypeMap
+    [TypeMap("wchar_t", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class WCharT : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new CILType(typeof(char));
         }
     }
 
-    [TypeMap("const char*", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class ConstCharPointer : TypeMap
+    [TypeMap("const char*", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class ConstCharPointer : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             if (ctx.Kind == TypePrinterContextKind.Managed)
                 return new CILType(typeof(string));
@@ -115,7 +117,7 @@ namespace CppSharp.Types.Std
                 $"{Context.Options.Encoding.EncodingName} is not supported yet.");
         }
 
-        public override void CSharpMarshalToNative(CSharpMarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             string param = ctx.Parameter.Name;
             if (ctx.Parameter.Usage == ParameterUsage.Unknown &&
@@ -145,7 +147,7 @@ namespace CppSharp.Types.Std
                 // would be really helpful to have ctx hold a Decl property representing the
                 // "appropriate" Decl when we get here. When MarshalKind == NativeField, Decl would
                 // be set to the Field we're operating on.
-                var fieldName = ctx.ReturnVarName.Substring(ctx.ReturnVarName.LastIndexOf("->") + 2);
+                var fieldName = ctx.ReturnVarName[Math.Max(ctx.ReturnVarName.LastIndexOf('.') + 1, ctx.ReturnVarName.LastIndexOf("->") + 2)..];
 
                 ctx.Before.WriteLine($"if (__{fieldName}_OwnsNativeMemory)");
                 ctx.Before.WriteLineIndent($"Marshal.FreeHGlobal({ctx.ReturnVarName});");
@@ -192,7 +194,7 @@ namespace CppSharp.Types.Std
             ctx.Return.Write($"{bytePtr}");
         }
 
-        public override void CSharpMarshalToManaged(CSharpMarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             if (ctx.Parameter != null && !ctx.Parameter.IsOut &&
                 !ctx.Parameter.IsInOut)
@@ -285,30 +287,30 @@ namespace CppSharp.Types.Std
         }
     }
 
-    [TypeMap("const char[]", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class ConstCharArray : ConstCharPointer
+    [TypeMap("const char[]", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class ConstCharArray : ConstCharPointer
     {
     }
 
-    [TypeMap("const wchar_t*", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class ConstWCharTPointer : ConstCharPointer
+    [TypeMap("const wchar_t*", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class ConstWCharTPointer : ConstCharPointer
     {
     }
 
-    [TypeMap("const char16_t*", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class ConstChar16TPointer : ConstCharPointer
+    [TypeMap("const char16_t*", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class ConstChar16TPointer : ConstCharPointer
     {
     }
 
-    [TypeMap("const char32_t*", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class ConstChar32TPointer : ConstCharPointer
+    [TypeMap("const char32_t*", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class ConstChar32TPointer : ConstCharPointer
     {
     }
 
-    [TypeMap("basic_string<char, char_traits<char>, allocator<char>>", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class String : TypeMap
+    [TypeMap("basic_string<char, char_traits<char>, allocator<char>>", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class String : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             if (ctx.Kind == TypePrinterContextKind.Managed)
                 return new CILType(typeof(string));
@@ -320,7 +322,7 @@ namespace CppSharp.Types.Std
             return new CustomType(basicString.Visit(typePrinter).Type);
         }
 
-        public override void CSharpMarshalToNative(CSharpMarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             Type type = ctx.Parameter.Type.Desugar();
             ClassTemplateSpecialization basicString = GetBasicString(type);
@@ -332,26 +334,40 @@ namespace CppSharp.Types.Std
             var assign = basicString.Methods.First(m => m.OriginalName == "assign");
             if (ctx.MarshalKind == MarshalKind.NativeField)
             {
-                ctx.Return.Write($@"{qualifiedBasicString}Extensions.{
-                    Helpers.InternalStruct}.{assign.Name}(new {
-                    typePrinter.IntPtrType}(&{
-                    ctx.ReturnVarName}), {ctx.Parameter.Name})");
+                string var;
+                if (ctx.ReturnVarName.LastIndexOf('.') > ctx.ReturnVarName.LastIndexOf("->"))
+                {
+                    var = Generator.GeneratedIdentifier(ctx.ArgName);
+                    ctx.Before.WriteLine($"fixed (void* {var} = &{ctx.ReturnVarName})");
+                    ctx.Before.WriteOpenBraceAndIndent();
+                    (ctx as CSharpMarshalContext).HasCodeBlock = true;
+                }
+                else
+                {
+                    var = $"&{ctx.ReturnVarName}";
+                }
+                ctx.Return.Write($@"{qualifiedBasicString}Extensions.{Helpers.InternalStruct}.{assign.Name}(new {typePrinter.IntPtrType}({var}), ");
+                if (ctx.Parameter.Type.IsTemplateParameterType())
+                    ctx.Return.Write("(string) (object) ");
+                ctx.Return.Write($"{ctx.Parameter.Name})");
                 ctx.ReturnVarName = string.Empty;
             }
             else
             {
                 var varBasicString = $"__basicString{ctx.ParameterIndex}";
-                ctx.Before.WriteLine($@"var {varBasicString} = new {
-                    basicString.Visit(typePrinter)}();");
-                ctx.Before.WriteLine($@"{qualifiedBasicString}Extensions.{
-                    assign.Name}({varBasicString}, {ctx.Parameter.Name});");
+                ctx.Before.WriteLine($@"var {varBasicString} = new {basicString.Visit(typePrinter)}();");
+
+                ctx.Before.Write($@"{qualifiedBasicString}Extensions.{assign.Name}({varBasicString}, ");
+                if (ctx.Parameter.Type.IsTemplateParameterType())
+                    ctx.Before.Write("(string) (object) ");
+                ctx.Before.WriteLine($"{ctx.Parameter.Name});");
+
                 ctx.Return.Write($"{varBasicString}.{Helpers.InstanceIdentifier}");
-                ctx.Cleanup.WriteLine($@"{varBasicString}.Dispose({
-                    (!Type.IsAddress() || ctx.Parameter?.IsIndirect == true ? "disposing: true, callNativeDtor:false" : string.Empty)});");
+                ctx.Cleanup.WriteLine($@"{varBasicString}.Dispose({(!Type.IsAddress() || ctx.Parameter?.IsIndirect == true ? "disposing: true, callNativeDtor:false" : string.Empty)});");
             }
         }
 
-        public override void CSharpMarshalToManaged(CSharpMarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             var type = Type.Desugar(resolveTemplateSubstitution: false);
             ClassTemplateSpecialization basicString = GetBasicString(type);
@@ -361,10 +377,7 @@ namespace CppSharp.Types.Std
             string varBasicString = $"__basicStringRet{ctx.ParameterIndex}";
             bool usePointer = type.IsAddress() || ctx.MarshalKind == MarshalKind.NativeField ||
                 ctx.MarshalKind == MarshalKind.ReturnVariableArray;
-            ctx.Before.WriteLine($@"var {varBasicString} = {
-                basicString.Visit(typePrinter)}.{Helpers.CreateInstanceIdentifier}({
-                (usePointer ? string.Empty : $"new {typePrinter.IntPtrType}(&")}{
-                 ctx.ReturnVarName}{(usePointer ? string.Empty : ")")});");
+            ctx.Before.WriteLine($@"var {varBasicString} = {basicString.Visit(typePrinter)}.{Helpers.CreateInstanceIdentifier}({(usePointer ? string.Empty : $"new {typePrinter.IntPtrType}(&")}{ctx.ReturnVarName}{(usePointer ? string.Empty : ")")});");
             string @string = $"{qualifiedBasicString}Extensions.{data.Name}({varBasicString})";
             var returnType = ctx.ReturnType.Type.Desugar();
             var cvtString = $"({returnType.Visit(typePrinter)}) (object) ";
@@ -407,10 +420,10 @@ namespace CppSharp.Types.Std
         }
     }
 
-    [TypeMap("FILE", GeneratorKind = GeneratorKind.CSharp)]
-    public partial class FILE : TypeMap
+    [TypeMap("FILE", GeneratorKindID = GeneratorKind.CSharp_ID)]
+    public class FILE : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new CILType(typeof(System.IntPtr));
         }

@@ -21,7 +21,7 @@ namespace CppSharp.Generators.CLI
             if (TypeMapDatabase.FindTypeMap(tag, out typeMap))
             {
                 var typePrinterContext = new TypePrinterContext { Type = tag };
-                return typeMap.CLISignatureType(typePrinterContext).ToString();
+                return typeMap.SignatureType(typePrinterContext).ToString();
             }
 
             Declaration decl = tag.Declaration;
@@ -112,7 +112,7 @@ namespace CppSharp.Generators.CLI
                     Type = pointer
                 };
 
-                return typeMap.CLISignatureType(typePrinterContext).Visit(this);
+                return typeMap.SignatureType(typePrinterContext).Visit(this);
             }
 
             var pointee = pointer.Pointee.Desugar();
@@ -217,7 +217,7 @@ namespace CppSharp.Generators.CLI
             {
                 typeMap.Type = typedef;
                 var typePrinterContext = new TypePrinterContext { Type = typedef };
-                return typeMap.CLISignatureType(typePrinterContext).ToString();
+                return typeMap.SignatureType(typePrinterContext).ToString();
             }
 
             FunctionType func;
@@ -241,7 +241,7 @@ namespace CppSharp.Generators.CLI
             if (TypeMapDatabase.FindTypeMap(template, out typeMap) && !typeMap.IsIgnored)
             {
                 var typePrinterContext = new TypePrinterContext { Type = template };
-                return typeMap.CLISignatureType(typePrinterContext).ToString();
+                return typeMap.SignatureType(typePrinterContext).ToString();
             }
 
             return decl.Name;
@@ -329,7 +329,7 @@ namespace CppSharp.Generators.CLI
             var result = string.Join("::", names);
             var translationUnit = decl.Namespace as TranslationUnit;
             if (translationUnit != null && translationUnit.HasFunctions &&
-                rootNamespace == translationUnit.FileNameWithoutExtension)
+                rootNamespace == Options.GenerateFreeStandingFunctionsClassName(translationUnit))
                 return "::" + result;
             return result;
         }

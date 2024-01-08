@@ -5,19 +5,18 @@ using CppSharp.Generators;
 using CppSharp.Generators.AST;
 using CppSharp.Generators.C;
 using CppSharp.Generators.CLI;
-using CppSharp.Generators.CSharp;
 
-namespace CppSharp.Types.Std
+namespace CppSharp.Types.Std.CLI
 {
-    [TypeMap("const char*", GeneratorKind = GeneratorKind.CLI)]
-    public partial class ConstCharPointer : TypeMap
+    [TypeMap("const char*", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class ConstCharPointer : TypeMap
     {
-        public override Type CLISignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new CILType(typeof(string));
         }
 
-        public override void CLIMarshalToNative(MarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             ctx.Before.WriteLine(
                 "auto _{0} = clix::marshalString<clix::E_UTF8>({1});",
@@ -26,7 +25,7 @@ namespace CppSharp.Types.Std
             ctx.Return.Write("_{0}.c_str()", ctx.ArgName);
         }
 
-        public override void CLIMarshalToManaged(MarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             if (ctx.Parameter != null && !ctx.Parameter.IsOut &&
                 !ctx.Parameter.IsInOut)
@@ -57,75 +56,74 @@ namespace CppSharp.Types.Std
                     $"{Context.Options.Encoding.EncodingName} is not supported yet.");
 
             ctx.Return.Write(
-                $@"({ctx.ReturnVarName} == 0 ? nullptr : clix::marshalString<clix::{
-                    param}>({ctx.ReturnVarName}))");
+                $@"({ctx.ReturnVarName} == 0 ? nullptr : clix::marshalString<clix::{param}>({ctx.ReturnVarName}))");
         }
     }
 
-    [TypeMap("const char[]", GeneratorKind = GeneratorKind.CLI)]
-    public partial class ConstCharArray : ConstCharPointer
+    [TypeMap("const char[]", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class ConstCharArray : ConstCharPointer
     {
     }
 
-    [TypeMap("const wchar_t*", GeneratorKind = GeneratorKind.CLI)]
-    public partial class ConstWCharTPointer : ConstCharPointer
+    [TypeMap("const wchar_t*", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class ConstWCharTPointer : ConstCharPointer
     {
     }
 
-    [TypeMap("const char16_t*", GeneratorKind = GeneratorKind.CLI)]
-    public partial class ConstChar16TPointer : ConstCharPointer
+    [TypeMap("const char16_t*", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class ConstChar16TPointer : ConstCharPointer
     {
     }
 
-    [TypeMap("const char32_t*", GeneratorKind = GeneratorKind.CLI)]
-    public partial class ConstChar32TPointer : ConstCharPointer
+    [TypeMap("const char32_t*", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class ConstChar32TPointer : ConstCharPointer
     {
     }
 
-    [TypeMap("basic_string<char, char_traits<char>, allocator<char>>", GeneratorKind = GeneratorKind.CLI)]
-    public partial class String : TypeMap
+    [TypeMap("basic_string<char, char_traits<char>, allocator<char>>", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class String : TypeMap
     {
-        public override Type CLISignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new CILType(typeof(string));
         }
 
-        public override void CLIMarshalToNative(MarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             ctx.Return.Write("clix::marshalString<clix::E_UTF8>({0})",
                 ctx.Parameter.Name);
         }
 
-        public override void CLIMarshalToManaged(MarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             ctx.Return.Write("clix::marshalString<clix::E_UTF8>({0})",
                 ctx.ReturnVarName);
         }
     }
 
-    [TypeMap("std::wstring", GeneratorKind = GeneratorKind.CLI)]
-    public partial class WString : TypeMap
+    [TypeMap("std::wstring", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class WString : TypeMap
     {
-        public override Type CLISignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new CILType(typeof(string));
         }
 
-        public override void CLIMarshalToNative(MarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             ctx.Return.Write("clix::marshalString<clix::E_UTF16>({0})",
                 ctx.Parameter.Name);
         }
 
-        public override void CLIMarshalToManaged(MarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             ctx.Return.Write("clix::marshalString<clix::E_UTF16>({0})",
                 ctx.ReturnVarName);
         }
     }
 
-    [TypeMap("std::vector", GeneratorKind = GeneratorKind.CLI)]
-    public partial class Vector : TypeMap
+    [TypeMap("std::vector", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class Vector : TypeMap
     {
         public override bool IsIgnored
         {
@@ -145,13 +143,13 @@ namespace CppSharp.Types.Std
             }
         }
 
-        public override Type CLISignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new CustomType(
                 $"::System::Collections::Generic::List<{ctx.GetTemplateParameterList()}>^");
         }
 
-        public override void CLIMarshalToNative(MarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             var desugared = Type.Desugar();
             var templateType = desugared as TemplateSpecializationType;
@@ -209,7 +207,7 @@ namespace CppSharp.Types.Std
             ctx.Return.Write(tmpVarName);
         }
 
-        public override void CLIMarshalToManaged(MarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             var desugared = Type.Desugar();
             var templateType = desugared as TemplateSpecializationType;
@@ -258,62 +256,50 @@ namespace CppSharp.Types.Std
         }
     }
 
-    [TypeMap("std::map", GeneratorKind = GeneratorKind.CLI)]
-    public partial class Map : TypeMap
+    [TypeMap("std::map", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class Map : TypeMap
     {
         public override bool IsIgnored { get { return true; } }
 
-        public override Type CLISignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             var type = Type as TemplateSpecializationType;
             return new CustomType(
-                $@"::System::Collections::Generic::Dictionary<{
-                    type.Arguments[0].Type}, {type.Arguments[1].Type}>^");
+                $@"::System::Collections::Generic::Dictionary<{type.Arguments[0].Type}, {type.Arguments[1].Type}>^");
         }
 
-        public override void CLIMarshalToNative(MarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             throw new System.NotImplementedException();
         }
 
-        public override void CLIMarshalToManaged(MarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             throw new System.NotImplementedException();
         }
-
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
-        {
-            if (ctx.Kind == TypePrinterContextKind.Native)
-                return new CustomType("Std.Map");
-
-            var type = Type as TemplateSpecializationType;
-            return new CustomType(
-                $@"System.Collections.Generic.Dictionary<{
-                    type.Arguments[0].Type}, {type.Arguments[1].Type}>");
-        }
     }
 
-    [TypeMap("std::list", GeneratorKind = GeneratorKind.CLI)]
-    public partial class List : TypeMap
+    [TypeMap("std::list", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class List : TypeMap
     {
         public override bool IsIgnored { get { return true; } }
     }
 
-    [TypeMap("std::shared_ptr", GeneratorKind = GeneratorKind.CLI)]
-    public partial class SharedPtr : TypeMap
+    [TypeMap("std::shared_ptr", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class SharedPtr : TypeMap
     {
         public override bool IsIgnored { get { return true; } }
     }
 
-    [TypeMap("basic_ostream<char, char_traits<char>>", GeneratorKind.CLI)]
-    public partial class OStream : TypeMap
+    [TypeMap("basic_ostream<char, char_traits<char>>", GeneratorKind.CLI_ID)]
+    public class OStream : TypeMap
     {
-        public override Type CLISignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new CILType(typeof(System.IO.TextWriter));
         }
 
-        public override void CLIMarshalToNative(MarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             var marshal = (CLIMarshalManagedToNativePrinter)ctx.MarshalToNative;
             if (!ctx.Parameter.Type.Desugar().IsPointer())
@@ -325,8 +311,8 @@ namespace CppSharp.Types.Std
         }
     }
 
-    [TypeMap("std::nullptr_t", GeneratorKind = GeneratorKind.CLI)]
-    public partial class NullPtr : TypeMap
+    [TypeMap("std::nullptr_t", GeneratorKindID = GeneratorKind.CLI_ID)]
+    public class NullPtr : TypeMap
     {
         public override bool DoesMarshalling { get { return false; } }
 

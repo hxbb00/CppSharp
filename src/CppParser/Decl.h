@@ -380,6 +380,7 @@ namespace CppSharp
                 bool isStatic;
                 bool isConst;
                 bool isExplicit;
+                bool isVolatile;
 
                 CXXMethodKind methodKind;
 
@@ -715,6 +716,7 @@ namespace CppSharp
             public:
                 ClassTemplatePartialSpecialization();
                 ~ClassTemplatePartialSpecialization();
+                VECTOR(Declaration *, Parameters)
             };
 
             class CS_API FunctionTemplate : public Template

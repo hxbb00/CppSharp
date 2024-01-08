@@ -847,7 +847,7 @@ namespace CppSharp
         readonly CommentConverter commentConverter;
         readonly StmtConverter stmtConverter;
 
-        readonly Dictionary<IntPtr, AST.Declaration> Declarations;
+        readonly Dictionary<(IntPtr, DeclarationKind), AST.Declaration> Declarations;
         readonly Dictionary<IntPtr, AST.PreprocessedEntity> PreprocessedEntities;
         readonly Dictionary<IntPtr, AST.FunctionTemplateSpecialization> FunctionTemplateSpecializations;
 
@@ -857,7 +857,7 @@ namespace CppSharp
             typeConverter = type;
             commentConverter = comment;
             stmtConverter = stmt;
-            Declarations = new Dictionary<IntPtr, AST.Declaration>();
+            Declarations = new Dictionary<(IntPtr, DeclarationKind), AST.Declaration>();
             PreprocessedEntities = new Dictionary<IntPtr, AST.PreprocessedEntity>();
             FunctionTemplateSpecializations = new Dictionary<IntPtr, AST.FunctionTemplateSpecialization>();
         }
@@ -876,8 +876,9 @@ namespace CppSharp
 
             // Check if the declaration was already handled and return its
             // existing instance.
-            if (CheckForDuplicates(decl) && Declarations.ContainsKey(originalPtr))
-                return Declarations[originalPtr];
+            var key = (decl.OriginalPtr, decl.Kind);
+            if (CheckForDuplicates(decl) && Declarations.TryGetValue(key, out var visit))
+                return visit;
 
             return base.Visit(decl);
         }
@@ -981,15 +982,17 @@ namespace CppSharp
 
         void VisitDeclaration(Declaration decl, AST.Declaration _decl)
         {
-            var originalPtr = decl.OriginalPtr;
+            var key = (decl.OriginalPtr, decl.Kind);
 
             if (CheckForDuplicates(decl))
-                if (Declarations.ContainsKey(originalPtr))
+            {
+                if (Declarations.ContainsKey(key))
                     throw new NotSupportedException("Duplicate declaration processed");
+            }
 
             // Add the declaration to the map so that we can check if have
             // already handled it and return the declaration.
-            Declarations[originalPtr] = _decl;
+            Declarations[key] = _decl;
 
             _decl.Access = VisitAccessSpecifier(decl.Access);
             _decl.Name = decl.Name;
@@ -1020,7 +1023,7 @@ namespace CppSharp
                 _decl.PreprocessedEntities.Add(_entity);
             }
 
-            _decl.OriginalPtr = originalPtr;
+            _decl.OriginalPtr = decl.OriginalPtr;
 
             NativeObjects.Add(decl);
 
@@ -1306,6 +1309,7 @@ namespace CppSharp
             _method.IsConst = decl.IsConst;
             _method.IsImplicit = decl.IsImplicit;
             _method.IsExplicit = decl.IsExplicit;
+            _method.IsVolatile = decl.IsVolatile;
 
             switch (decl.RefQualifier)
             {
@@ -1916,6 +1920,12 @@ namespace CppSharp
         {
             var _decl = new AST.ClassTemplatePartialSpecialization();
             VisitClassTemplateSpecialization(decl, _decl);
+            for (uint i = 0; i < decl.ParametersCount; ++i)
+            {
+                var param = decl.GetParameters(i);
+                var _param = Visit(param);
+                _decl.Parameters.Add(_param);
+            }
             return _decl;
         }
 

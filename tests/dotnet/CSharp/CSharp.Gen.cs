@@ -26,6 +26,8 @@ namespace CppSharp.Tests
 
             driver.ParserOptions.UnityBuild = true;
             driver.ParserOptions.AddSupportedFunctionTemplates("FunctionTemplate");
+
+            driver.Options.GenerateFreeStandingFunctionsClassName = t => t.FileNameWithoutExtension + "Cool";
         }
 
         public override void SetupPasses(Driver driver)
@@ -123,17 +125,17 @@ namespace CppSharp.Tests
     [TypeMap("boolean_t")]
     public class BooleanTypeMap : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new BuiltinType(PrimitiveType.Bool);
         }
 
-        public override void CSharpMarshalToNative(CSharpMarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             ctx.Return.Write(ctx.Parameter.Name);
         }
 
-        public override void CSharpMarshalToManaged(CSharpMarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             ctx.Return.Write(ctx.ReturnVarName);
         }
@@ -147,12 +149,12 @@ namespace CppSharp.Tests
             return string.Empty;
         }
 
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return GetEnumType(ctx.Type);
         }
 
-        public override void CSharpMarshalToNative(CSharpMarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             if (ctx.Parameter.Type.Desugar().IsAddress())
                 ctx.Return.Write("new global::System.IntPtr(&{0})", ctx.Parameter.Name);
@@ -160,7 +162,7 @@ namespace CppSharp.Tests
                 ctx.Return.Write(ctx.Parameter.Name);
         }
 
-        public override void CSharpMarshalToManaged(CSharpMarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             if (ctx.ReturnType.Type.Desugar().IsAddress())
             {
@@ -199,17 +201,17 @@ namespace CppSharp.Tests
             return string.Empty;
         }
 
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             return new TagType(flags ?? (flags = Context.ASTContext.FindEnum("Flags").First()));
         }
 
-        public override void CSharpMarshalToNative(CSharpMarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             ctx.Return.Write(ctx.Parameter.Name);
         }
 
-        public override void CSharpMarshalToManaged(CSharpMarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             ctx.Return.Write(ctx.ReturnVarName);
         }
@@ -232,7 +234,7 @@ namespace CppSharp.Tests
             }
         }
 
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             if (ctx.Kind == TypePrinterContextKind.Native)
             {
@@ -252,7 +254,7 @@ namespace CppSharp.Tests
                     ctx.GetTemplateParameterList()}>");
         }
 
-        public override void CSharpMarshalToNative(CSharpMarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             // pointless, put just so that the generated code compiles
             var type = (TemplateSpecializationType)ctx.Parameter.Type.Desugar();
@@ -262,7 +264,7 @@ namespace CppSharp.Tests
             ctx.Return.Write("new {0}()", specialization.Visit(typePrinter));
         }
 
-        public override void CSharpMarshalToManaged(CSharpMarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             ctx.Return.Write(ctx.ReturnVarName);
         }
@@ -271,18 +273,18 @@ namespace CppSharp.Tests
     [TypeMap("TypeMappedWithOperator")]
     public class TypeMappedWithOperator : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             // doesn't matter, we just need it to compile
             return new BuiltinType(PrimitiveType.Int);
         }
 
-        public override void CSharpMarshalToNative(CSharpMarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             ctx.Return.Write(ctx.Parameter.Name);
         }
 
-        public override void CSharpMarshalToManaged(CSharpMarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             ctx.Return.Write(ctx.ReturnVarName);
         }
@@ -291,7 +293,7 @@ namespace CppSharp.Tests
     [TypeMap("QString")]
     public class QString : TypeMap
     {
-        public override Type CSharpSignatureType(TypePrinterContext ctx)
+        public override Type SignatureType(TypePrinterContext ctx)
         {
             if (ctx.Kind == TypePrinterContextKind.Native)
             {
@@ -302,13 +304,13 @@ namespace CppSharp.Tests
             return new CILType(typeof(string));
         }
 
-        public override void CSharpMarshalToNative(CSharpMarshalContext ctx)
+        public override void MarshalToNative(MarshalContext ctx)
         {
             ctx.Return.Write(ctx.Parameter.Type.Desugar().IsAddress() ?
                 "global::System.IntPtr.Zero" : "\"test\"");
         }
 
-        public override void CSharpMarshalToManaged(CSharpMarshalContext ctx)
+        public override void MarshalToManaged(MarshalContext ctx)
         {
             ctx.Return.Write("\"test\"");
         }

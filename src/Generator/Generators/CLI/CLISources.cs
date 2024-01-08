@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using CppSharp.AST;
 using CppSharp.AST.Extensions;
@@ -61,7 +62,8 @@ namespace CppSharp.Generators.CLI
 
             foreach (var typeRef in typeReferenceCollector.TypeReferences)
             {
-                if (typeRef.Include.File == TranslationUnit.FileName)
+                var filename = Context.Options.GenerateName != null ? $"{Context.Options.GenerateName(TranslationUnit)}{Path.GetExtension(TranslationUnit.FileName)}" : TranslationUnit.FileName;
+                if (typeRef.Include.File == filename)
                     continue;
 
                 var include = typeRef.Include;
@@ -909,7 +911,7 @@ namespace CppSharp.Generators.CLI
             GenerateDeclarationCommon(function);
 
             var classSig = string.Format("{0}::{1}", QualifiedIdentifier(@namespace),
-                TranslationUnit.FileNameWithoutExtension);
+                Options.GenerateFreeStandingFunctionsClassName(TranslationUnit));
 
             Write("{0} {1}::{2}(", function.ReturnType, classSig,
                 function.Name);

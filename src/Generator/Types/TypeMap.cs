@@ -2,10 +2,7 @@
 using CppSharp.AST;
 using CppSharp.Generators;
 using CppSharp.Generators.AST;
-using CppSharp.Generators.C;
 using CppSharp.Generators.CLI;
-using CppSharp.Generators.Cpp;
-using CppSharp.Generators.CSharp;
 using Attribute = System.Attribute;
 using Type = CppSharp.AST.Type;
 
@@ -15,17 +12,17 @@ namespace CppSharp.Types
     public class TypeMapAttribute : Attribute
     {
         public string Type { get; }
-        public GeneratorKind GeneratorKind { get; set; }
+        public string GeneratorKindID { get; set; }
 
-        public TypeMapAttribute(string type) : this(type, 0)
+        public TypeMapAttribute(string type) : this(type, null)
         {
             Type = type;
         }
 
-        public TypeMapAttribute(string type, GeneratorKind generatorKind)
+        public TypeMapAttribute(string type, string generatorKindID)
         {
             Type = type;
-            GeneratorKind = generatorKind;
+            GeneratorKindID = generatorKindID;
         }
     }
 
@@ -51,76 +48,22 @@ namespace CppSharp.Types
         /// </summary>
         public virtual bool DoesMarshalling => true;
 
-        public virtual Type SignatureType(GeneratorKind kind, TypePrinterContext ctx)
-        {
-            switch (kind)
-            {
-                case GeneratorKind.C:
-                case GeneratorKind.CPlusPlus:
-                    return CppSignatureType(ctx);
-                case GeneratorKind.CLI:
-                    return CLISignatureType(ctx);
-                case GeneratorKind.CSharp:
-                    return CSharpSignatureType(ctx);
-                default:
-                    throw new System.NotImplementedException();
-            }
-        }
-
-        public virtual void MarshalToNative(GeneratorKind kind, MarshalContext ctx)
-        {
-            switch (kind)
-            {
-                case GeneratorKind.C:
-                case GeneratorKind.CPlusPlus:
-                    CppMarshalToNative(ctx);
-                    return;
-                case GeneratorKind.CLI:
-                    CLIMarshalToNative(ctx);
-                    return;
-                case GeneratorKind.CSharp:
-                    CSharpMarshalToNative(ctx as CSharpMarshalContext);
-                    return;
-                default:
-                    throw new System.NotImplementedException();
-            }
-        }
-
-        public virtual void MarshalToManaged(GeneratorKind kind, MarshalContext ctx)
-        {
-            switch (kind)
-            {
-                case GeneratorKind.C:
-                case GeneratorKind.CPlusPlus:
-                    CppMarshalToManaged(ctx);
-                    return;
-                case GeneratorKind.CLI:
-                    CLIMarshalToManaged(ctx);
-                    return;
-                case GeneratorKind.CSharp:
-                    CSharpMarshalToManaged(ctx as CSharpMarshalContext);
-                    return;
-                default:
-                    throw new System.NotImplementedException();
-            }
-        }
-
-        #region C# backend
-
-        public virtual Type CSharpSignatureType(TypePrinterContext ctx)
+        public virtual Type SignatureType(TypePrinterContext ctx)
         {
             return new CILType(typeof(object));
         }
 
-        public virtual void CSharpMarshalToNative(CSharpMarshalContext ctx)
+        public virtual void MarshalToNative(MarshalContext ctx)
         {
             ctx.Return.Write(ctx.Parameter.Name);
         }
 
-        public virtual void CSharpMarshalToManaged(CSharpMarshalContext ctx)
+        public virtual void MarshalToManaged(MarshalContext ctx)
         {
             ctx.Return.Write(ctx.ReturnVarName);
         }
+
+        #region C# backend
 
         /// <summary>
         /// Used to construct a new instance of the mapped type.
@@ -135,55 +78,18 @@ namespace CppSharp.Types
 
         #region C++/CLI backend
 
-        public virtual Type CLISignatureType(TypePrinterContext ctx)
-        {
-            return new CILType(typeof(object));
-        }
-
         public virtual void CLITypeReference(CLITypeReferenceCollector collector, ASTRecord<Declaration> loc)
         {
         }
 
-        public virtual void CLIMarshalToNative(MarshalContext ctx)
-        {
-            ctx.Return.Write(ctx.Parameter.Name);
-        }
-
-        public virtual void CLIMarshalToManaged(MarshalContext ctx)
-        {
-            ctx.Return.Write(ctx.ReturnVarName);
-        }
-
         #endregion
-
-        #region C++ backend
-
-        public virtual Type CppSignatureType(TypePrinterContext ctx)
-        {
-            return new CILType(typeof(object));
-        }
-
-        public virtual void CppTypeReference(CLITypeReference collector, ASTRecord<Declaration> record)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual void CppMarshalToNative(MarshalContext ctx)
-        {
-            ctx.Return.Write(ctx.Parameter.Name);
-        }
-
-        public virtual void CppMarshalToManaged(MarshalContext ctx)
-        {
-            ctx.Return.Write(ctx.ReturnVarName);
-        }
-
-        #endregion 
     }
 
     public interface ITypeMapDatabase
     {
         bool FindTypeMap(Type decl, out TypeMap typeMap);
+        bool FindTypeMap(Type decl, GeneratorKind kind, out TypeMap typeMap);
         bool FindTypeMap(Declaration declaration, out TypeMap typeMap);
+        bool FindTypeMap(Declaration declaration, GeneratorKind kind, out TypeMap typeMap);
     }
 }

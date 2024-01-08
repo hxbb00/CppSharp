@@ -105,8 +105,10 @@ download_premake()
 {
   premake_dir="$builddir/premake"
   premake_filename=premake5
+  premake_archive_ext=tar.gz
   if [ $oshost = "windows" ]; then
     premake_filename=$premake_filename.exe
+    premake_archive_ext=zip
   fi
   premake_path=$premake_dir/$premake_filename
   echo "premake_local_path... $premake_path"

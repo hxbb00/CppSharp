@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using CppSharp.AST;
 using CppSharp.Generators;
+using CppSharp.Passes;
 
 namespace CppSharp
 {
@@ -173,6 +174,12 @@ namespace CppSharp
         public Func<TranslationUnit, string> GenerateName;
 
         /// <summary>
+        /// By default the classes in which free standing functions are contained are named like the header they are in
+        /// this options allows you to customize this behavior.
+        /// </summary>
+        public Func<TranslationUnit, string> GenerateFreeStandingFunctionsClassName = tu => tu.FileNameWithoutExtension;
+
+        /// <summary>
         /// Set this option to the kind of comments that you want generated
         /// in the source code. This overrides the default kind set by the
         /// target generator.
@@ -247,6 +254,12 @@ namespace CppSharp
         /// on the generated instance, for supporting higher-level binding of the code.
         /// </summary>
         public bool GenerateExternalDataFields { get; set; } = false;
+
+        public delegate void TranslationUnitPassCallBack(TranslationUnitPass pass, int index, int count);
+
+        public TranslationUnitPassCallBack TranslationUnitPassPreCallBack { get; set; }
+
+        public TranslationUnitPassCallBack TranslationUnitPassPostCallBack { get; set; }
 
         #endregion
     }

@@ -202,6 +202,7 @@ public:
     public:
         Attribute();
         Attribute(const Attribute&);
+        ~Attribute();
         std::string name;
         std::string value;
     };
