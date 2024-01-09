@@ -162,6 +162,7 @@ namespace CppSharp.Parser
             AddArguments("-fms-extensions");
             AddArguments("-fms-compatibility");
             AddArguments("-fdelayed-template-parsing");
+            AddDefines($"_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH");
         }
 
         /// <summary>
