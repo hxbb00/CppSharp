@@ -36,13 +36,13 @@ function clone_llvm()
   end
 
   local archive = 'llvm-'..llvm_release..'.tar.gz'
-  print('Archive path:'..archive..' is here.')
+  print('Archive path:'..archive..'.')
   if os.isfile(archive) then
     print('Archive '..archive..' already exists.')
   else
     download('https://github.com/llvm/llvm-project/archive/'..llvm_release..'.tar.gz', archive)
   end
-
+  print('llvm directory path:'..llvm..'.')
   if os.isdir(llvm) then
     os.rmdir(llvm)
     if os.isdir(llvm) then
@@ -189,7 +189,8 @@ function download_llvm()
   local base = "https://github.com/hxbb00/CppSharp/releases/download/CppSharp/"
   local pkg_name = get_llvm_package_name()
   local archive = pkg_name .. archive_ext
-  print("Archive path: " .. archive .. " is here.")
+  print("Archive path: " .. archive .. ".")
+  print("Directory path: " .. pkg_name .. ".")
   -- check if we already have the file downloaded
   if os.isfile(archive) then
     print("Archive " .. archive .. " already exists.")
